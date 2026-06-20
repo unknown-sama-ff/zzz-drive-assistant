@@ -341,6 +341,37 @@ let selectedChar = null;
 
 const SLOT_LABELS = ["","生命","攻击","防御","暴击/穿透","输出","伤害/能量"];
 
+// 主属性 → 需要从副属性列表排除的词条（同类型不能同时出现）
+const MAIN_SUBSTAT_EXCLUDE = {
+  "生命值":        ["生命值%", "生命值数值"],
+  "攻击力":        ["攻击力%", "攻击力数值"],
+  "防御力":        ["防御力%", "防御力数值"],
+  "生命值%":       ["生命值%", "生命值数值"],
+  "攻击力%":       ["攻击力%", "攻击力数值"],
+  "防御力%":       ["防御力%", "防御力数值"],
+  "暴击率%":       ["暴击率%"],
+  "暴击伤害%":     ["暴击伤害%"],
+  "异常精通":      ["异常精通"],
+  "异常掌控":      ["异常掌控"],
+  "能量自动回复%": ["能量自动回复"],
+};
+
+function refreshSubstatOptions(slot) {
+  const mainEl = document.getElementById(`disc${slot}_main`);
+  const mainStat = mainEl ? mainEl.value : "";
+  const excluded = MAIN_SUBSTAT_EXCLUDE[mainStat] || [];
+  for (let j = 1; j <= 4; j++) {
+    const sel = document.getElementById(`disc${slot}_sub${j}_name`);
+    if (!sel) continue;
+    Array.from(sel.options).forEach(opt => {
+      if (!opt.value) return;
+      opt.disabled = excluded.includes(opt.value);
+      opt.hidden   = excluded.includes(opt.value);
+    });
+    if (excluded.includes(sel.value)) sel.value = "";
+  }
+}
+
 // ── Settings ──────────────────────────────────────────────
 const PROVIDER_DEFAULTS = {
   openai:   { hint: "OpenAI API Key，从 platform.openai.com 获取", model: "gpt-4o-mini", base: "https://api.openai.com" },
@@ -442,6 +473,7 @@ function buildDiscCards() {
   grid.innerHTML = "";
   for (let i = 1; i <= 6; i++) {
     grid.appendChild(buildDiscCard(i));
+    refreshSubstatOptions(i);
   }
 }
 
@@ -487,7 +519,7 @@ function buildDiscCard(slot) {
       <label>主属性</label>
       ${isFixed
         ? `<input type="text" id="disc${slot}_main" value="${mainFixed}" readonly style="opacity:.6;cursor:default">`
-        : `<select class="field-select" id="disc${slot}_main"><option value="">选择主属性</option>${mainOptions}</select>`
+        : `<select class="field-select" id="disc${slot}_main" onchange="refreshSubstatOptions(${slot})"><option value="">选择主属性</option>${mainOptions}</select>`
       }
     </div>
     <div class="field-group">
