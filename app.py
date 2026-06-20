@@ -96,29 +96,42 @@ def build_prompt(character_name, discs, char_info):
 """
     return prompt
 
-def call_ai_api(prompt):
-    # 优先使用 OpenAI，其次 Claude
-    openai_key = os.environ.get("OPENAI_API_KEY")
-    claude_key = os.environ.get("ANTHROPIC_API_KEY")
-
-    if openai_key:
-        return call_openai(prompt, openai_key)
-    elif claude_key:
-        return call_claude(prompt, claude_key)
-    else:
-        raise ValueError("未配置 API Key，请设置 OPENAI_API_KEY 或 ANTHROPIC_API_KEY 环境变量")
-
-def call_openai(prompt, api_key):
+def call_ai_api(prompt, provider=None, api_key=None, api_base=None, model=None):
     import urllib.request
+
+    if provider == "claude":
+        key = api_key or os.environ.get("ANTHROPIC_API_KEY")
+        if not key:
+            raise ValueError("未配置 Claude API Key，请在设置中填写或设置 ANTHROPIC_API_KEY 环境变量")
+        base = api_base or "https://api.anthropic.com"
+        mdl = model or "claude-haiku-4-5-20251001"
+        return call_claude(prompt, key, base, mdl)
+
+    # openai / custom / 未指定 → 走 OpenAI 兼容接口
+    key = api_key or os.environ.get("OPENAI_API_KEY")
+    if key:
+        base = api_base or "https://api.openai.com"
+        mdl = model or "gpt-4o-mini"
+        return call_openai(prompt, key, base, mdl)
+
+    # 最后 fallback：Claude 环境变量
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if claude_key:
+        return call_claude(prompt, claude_key, "https://api.anthropic.com", "claude-haiku-4-5-20251001")
+
+    raise ValueError("未配置 API Key，请在页面右上角设置中填写，或设置 OPENAI_API_KEY / ANTHROPIC_API_KEY 环境变量")
+
+def call_openai(prompt, api_key, base_url="https://api.openai.com", model="gpt-4o-mini"):
+    import urllib.request
+    url = base_url.rstrip("/") + "/v1/chat/completions"
     data = json.dumps({
-        "model": "gpt-4o-mini",
+        "model": model,
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.3,
         "max_tokens": 2000
     }).encode("utf-8")
     req = urllib.request.Request(
-        "https://api.openai.com/v1/chat/completions",
-        data=data,
+        url, data=data,
         headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
         method="POST"
     )
@@ -126,16 +139,16 @@ def call_openai(prompt, api_key):
         result = json.loads(resp.read().decode("utf-8"))
     return result["choices"][0]["message"]["content"]
 
-def call_claude(prompt, api_key):
+def call_claude(prompt, api_key, base_url="https://api.anthropic.com", model="claude-haiku-4-5-20251001"):
     import urllib.request
+    url = base_url.rstrip("/") + "/v1/messages"
     data = json.dumps({
-        "model": "claude-haiku-4-5-20251001",
+        "model": model,
         "max_tokens": 2000,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
     req = urllib.request.Request(
-        "https://api.anthropic.com/v1/messages",
-        data=data,
+        url, data=data,
         headers={
             "Content-Type": "application/json",
             "x-api-key": api_key,
@@ -185,8 +198,13 @@ def api_score():
 
     prompt = build_prompt(character_name, discs, char_info)
 
+    provider = body.get("provider", "")
+    api_key = body.get("api_key", "").strip() or None
+    api_base = body.get("api_base", "").strip() or None
+    model = body.get("model", "").strip() or None
+
     try:
-        raw = call_ai_api(prompt)
+        raw = call_ai_api(prompt, provider=provider, api_key=api_key, api_base=api_base, model=model)
         result = parse_ai_response(raw)
     except ValueError as e:
         return jsonify({"error": str(e)}), 500

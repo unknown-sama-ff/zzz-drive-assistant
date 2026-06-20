@@ -192,6 +192,62 @@
     padding: 16px 20px; color: var(--red); font-size: 14px; display: none;
   }
   .error-box.visible { display: block; }
+
+  /* Settings button */
+  .settings-btn {
+    margin-left: auto; background: transparent; border: 1px solid var(--border);
+    color: var(--text2); padding: 7px 12px; border-radius: 8px; cursor: pointer;
+    font-size: 15px; transition: border-color .2s, color .2s;
+  }
+  .settings-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Settings modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100;
+    display: none; align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-overlay.visible { display: flex; }
+  .modal {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 24px; width: 100%; max-width: 480px;
+  }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .modal-title { font-size: 16px; font-weight: 700; color: var(--accent); }
+  .modal-close { background: none; border: none; color: var(--text2); font-size: 20px; cursor: pointer; line-height: 1; padding: 2px 6px; }
+  .modal-close:hover { color: var(--text); }
+
+  .setting-field { margin-bottom: 16px; }
+  .setting-field label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 6px; }
+  .setting-field input, .setting-field select {
+    width: 100%; background: var(--card2); border: 1px solid var(--border);
+    color: var(--text); padding: 9px 12px; border-radius: 8px; font-size: 13px; outline: none;
+  }
+  .setting-field input:focus, .setting-field select:focus { border-color: var(--accent); }
+  .setting-field input::placeholder { color: #55556a; }
+
+  .setting-hint { font-size: 11px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
+  .setting-hint a { color: var(--blue); text-decoration: none; }
+
+  .provider-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+  .ptab {
+    flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--card2); color: var(--text2); cursor: pointer; font-size: 13px;
+    text-align: center; transition: all .15s;
+  }
+  .ptab.active { border-color: var(--accent); color: var(--accent); background: #1e1a0a; }
+
+  .modal-save-btn {
+    width: 100%; padding: 11px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #000; font-weight: 700; border: none; border-radius: 8px; cursor: pointer;
+    font-size: 14px; margin-top: 4px;
+  }
+  .modal-save-btn:hover { opacity: .9; }
+
+  .api-status {
+    font-size: 11px; margin-top: 6px; padding: 6px 10px; border-radius: 6px;
+    background: var(--card2); color: var(--text2);
+  }
+  .api-status.set { color: var(--green); }
 </style>
 </head>
 <body>
@@ -201,7 +257,46 @@
     <div class="logo">▶ 绝区零 驱动盘评分</div>
     <div class="sub">ZZZ Disc Drive Scorer · AI 智能评分</div>
   </div>
+  <button class="settings-btn" onclick="openSettings()" title="API 设置">⚙ 设置</button>
 </header>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">⚙ API 设置</div>
+      <button class="modal-close" onclick="closeSettings()">×</button>
+    </div>
+
+    <div class="provider-tabs">
+      <div class="ptab active" id="tab-openai" onclick="switchProvider('openai')">OpenAI</div>
+      <div class="ptab" id="tab-claude" onclick="switchProvider('claude')">Claude</div>
+      <div class="ptab" id="tab-custom" onclick="switchProvider('custom')">自定义</div>
+    </div>
+
+    <div class="setting-field">
+      <label>API Key</label>
+      <input type="password" id="cfg_api_key" placeholder="sk-...">
+      <div class="setting-hint" id="cfg_key_hint">OpenAI API Key，从 platform.openai.com 获取</div>
+    </div>
+
+    <div class="setting-field" id="cfg_base_wrap">
+      <label>API Base URL（可选）</label>
+      <input type="text" id="cfg_api_base" placeholder="https://api.openai.com">
+      <div class="setting-hint">留空使用默认地址；使用国内代理或第三方转发时填写</div>
+    </div>
+
+    <div class="setting-field" id="cfg_model_wrap">
+      <label>模型名称（可选）</label>
+      <input type="text" id="cfg_model" placeholder="">
+      <div class="setting-hint" id="cfg_model_hint">留空使用默认模型</div>
+    </div>
+
+    <div class="api-status" id="apiStatus">未配置 API Key</div>
+
+    <button class="modal-save-btn" onclick="saveSettings()">保存设置</button>
+  </div>
+</div>
 
 <div class="container">
 
@@ -244,6 +339,77 @@ let charData = null;
 let selectedChar = null;
 
 const SLOT_LABELS = ["","生命","攻击","防御","暴击/穿透","输出","伤害/能量"];
+
+// ── Settings ──────────────────────────────────────────────
+const PROVIDER_DEFAULTS = {
+  openai: { hint: "OpenAI API Key，从 platform.openai.com 获取", model: "gpt-4o-mini", base: "https://api.openai.com" },
+  claude: { hint: "Anthropic API Key，从 console.anthropic.com 获取", model: "claude-haiku-4-5-20251001", base: "https://api.anthropic.com" },
+  custom: { hint: "兼容 OpenAI 格式的第三方 API Key", model: "", base: "" }
+};
+
+function loadSettings() {
+  return JSON.parse(localStorage.getItem("zzz_api_settings") || "{}");
+}
+
+function saveSettings() {
+  const provider = document.querySelector(".ptab.active").id.replace("tab-", "");
+  const settings = {
+    provider,
+    api_key: document.getElementById("cfg_api_key").value.trim(),
+    api_base: document.getElementById("cfg_api_base").value.trim(),
+    model: document.getElementById("cfg_model").value.trim()
+  };
+  localStorage.setItem("zzz_api_settings", JSON.stringify(settings));
+  updateApiStatus(settings);
+  closeSettings();
+}
+
+function openSettings() {
+  const s = loadSettings();
+  const provider = s.provider || "openai";
+  switchProvider(provider);
+  document.getElementById("cfg_api_key").value = s.api_key || "";
+  document.getElementById("cfg_api_base").value = s.api_base || "";
+  document.getElementById("cfg_model").value = s.model || "";
+  document.getElementById("settingsModal").classList.add("visible");
+}
+
+function closeSettings() {
+  document.getElementById("settingsModal").classList.remove("visible");
+}
+
+function switchProvider(p) {
+  document.querySelectorAll(".ptab").forEach(t => t.classList.remove("active"));
+  document.getElementById("tab-" + p).classList.add("active");
+  const d = PROVIDER_DEFAULTS[p];
+  document.getElementById("cfg_key_hint").textContent = d.hint;
+  document.getElementById("cfg_model").placeholder = d.model || "（默认）";
+  document.getElementById("cfg_api_base").placeholder = d.base || "https://your-api.example.com";
+  // show/hide base url for non-openai
+  document.getElementById("cfg_base_wrap").style.display = p === "claude" ? "none" : "block";
+  if (p === "claude") document.getElementById("cfg_api_base").value = "";
+}
+
+function updateApiStatus(settings) {
+  const el = document.getElementById("apiStatus");
+  if (!settings || !settings.api_key) {
+    el.textContent = "未配置 API Key（将尝试使用服务器环境变量）";
+    el.className = "api-status";
+  } else {
+    const masked = settings.api_key.slice(0, 6) + "…" + settings.api_key.slice(-4);
+    el.textContent = `✓ 已配置 ${(settings.provider||"openai").toUpperCase()} Key: ${masked}`;
+    el.className = "api-status set";
+  }
+}
+
+// Close modal on overlay click
+document.getElementById("settingsModal").addEventListener("click", function(e) {
+  if (e.target === this) closeSettings();
+});
+
+// Init settings status
+updateApiStatus(loadSettings());
+// ──────────────────────────────────────────────────────────
 
 async function init() {
   const res = await fetch("/api/characters");
@@ -384,11 +550,19 @@ async function submitScore() {
   document.getElementById("loading").classList.add("visible");
   document.getElementById("scoreBtn").disabled = true;
 
+  const cfg = loadSettings();
   try {
     const res = await fetch("/api/score", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ character: charName, discs })
+      body: JSON.stringify({
+        character: charName,
+        discs,
+        provider: cfg.provider || "",
+        api_key: cfg.api_key || "",
+        api_base: cfg.api_base || "",
+        model: cfg.model || ""
+      })
     });
     const data = await res.json();
     document.getElementById("loading").classList.remove("visible");
