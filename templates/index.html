@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>绝区零 驱动盘评分助手</title>
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --card: #1a1a1f;
+    --card2: #22222a;
+    --border: #2e2e3a;
+    --accent: #f5c518;
+    --accent2: #e07b39;
+    --text: #e8e8f0;
+    --text2: #888899;
+    --green: #4caf7d;
+    --red: #e05555;
+    --blue: #5599ee;
+    --purple: #9966dd;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; min-height: 100vh; }
+
+  header {
+    background: linear-gradient(135deg, #1a1020 0%, #0d0d1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  header .logo { font-size: 22px; font-weight: 700; color: var(--accent); letter-spacing: 1px; }
+  header .sub { font-size: 13px; color: var(--text2); }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  /* Character selector */
+  .char-section {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; margin-bottom: 24px;
+  }
+  .char-section label { font-size: 13px; color: var(--text2); display: block; margin-bottom: 8px; }
+  .char-section select {
+    width: 100%; max-width: 320px; background: var(--card2); border: 1px solid var(--border);
+    color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 15px; cursor: pointer;
+    outline: none;
+  }
+  .char-section select:focus { border-color: var(--accent); }
+  .char-info {
+    margin-top: 14px; padding: 12px 16px; background: var(--card2); border-radius: 8px;
+    border-left: 3px solid var(--accent); display: none;
+  }
+  .char-info.visible { display: block; }
+  .char-info-grid { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 13px; }
+  .char-info-item { color: var(--text2); }
+  .char-info-item span { color: var(--text); }
+
+  /* Disc grid */
+  .discs-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;
+  }
+  @media (max-width: 700px) { .discs-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .discs-grid { grid-template-columns: 1fr; } }
+
+  .disc-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px;
+    transition: border-color .2s;
+  }
+  .disc-card:hover { border-color: #44445a; }
+  .disc-card.graded { border-color: var(--accent); }
+
+  .disc-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+  }
+  .disc-num {
+    width: 28px; height: 28px; background: var(--accent); color: #000;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; flex-shrink: 0;
+  }
+  .disc-title { font-size: 14px; font-weight: 600; }
+  .disc-pos-hint { font-size: 11px; color: var(--text2); margin-left: auto; }
+
+  .field-group { margin-bottom: 10px; }
+  .field-group label { font-size: 11px; color: var(--text2); display: block; margin-bottom: 4px; }
+
+  input[type="text"], select.field-select {
+    width: 100%; background: var(--card2); border: 1px solid var(--border);
+    color: var(--text); padding: 7px 10px; border-radius: 6px; font-size: 13px; outline: none;
+  }
+  input[type="text"]:focus, select.field-select:focus { border-color: var(--accent); }
+  input[type="text"]::placeholder { color: #555566; }
+
+  .substat-row { display: flex; gap: 6px; margin-bottom: 6px; }
+  .substat-row select { flex: 2; }
+  .substat-row input { flex: 1; min-width: 0; }
+
+  /* Datalist hint */
+  .set-input-wrap { position: relative; }
+
+  /* Score button */
+  .score-btn {
+    display: block; width: 100%; max-width: 400px; margin: 0 auto 32px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    color: #000; font-size: 16px; font-weight: 700; padding: 14px;
+    border: none; border-radius: var(--radius); cursor: pointer; letter-spacing: 1px;
+    transition: opacity .2s, transform .1s;
+  }
+  .score-btn:hover { opacity: .9; }
+  .score-btn:active { transform: scale(.98); }
+  .score-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* Loading */
+  .loading {
+    text-align: center; padding: 40px; display: none;
+  }
+  .loading.visible { display: block; }
+  .spinner {
+    width: 40px; height: 40px; border: 3px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin .8s linear infinite; margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Results */
+  .results { display: none; }
+  .results.visible { display: block; }
+
+  .overall-card {
+    background: linear-gradient(135deg, #1e1a10 0%, #1a1220 100%);
+    border: 1px solid var(--accent); border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+  }
+  .overall-top { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .grade-badge {
+    width: 72px; height: 72px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; font-weight: 900; flex-shrink: 0;
+  }
+  .grade-S { background: linear-gradient(135deg,#f5c518,#e07b39); color: #000; }
+  .grade-A { background: linear-gradient(135deg,#7ec8e3,#4488cc); color: #000; }
+  .grade-B { background: linear-gradient(135deg,#4caf7d,#2e8b57); color: #000; }
+  .grade-C { background: linear-gradient(135deg,#aaa,#666); color: #000; }
+  .grade-D { background: linear-gradient(135deg,#e05555,#992222); color: #fff; }
+
+  .overall-info .score-num { font-size: 42px; font-weight: 900; color: var(--accent); line-height: 1; }
+  .overall-info .score-label { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .overall-comment { margin-top: 14px; font-size: 14px; color: var(--text2); line-height: 1.7; }
+
+  .discs-result-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;
+  }
+  @media (max-width: 700px) { .discs-result-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .discs-result-grid { grid-template-columns: 1fr; } }
+
+  .disc-result-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px;
+  }
+  .disc-result-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .disc-result-grade {
+    width: 32px; height: 32px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; flex-shrink: 0;
+  }
+  .disc-result-score { font-size: 22px; font-weight: 800; color: var(--accent); }
+  .disc-result-slot { font-size: 12px; color: var(--text2); }
+  .disc-result-stars { color: var(--accent); font-size: 12px; margin-bottom: 6px; }
+  .disc-result-line { font-size: 12px; color: var(--text2); margin-bottom: 4px; line-height: 1.5; }
+  .disc-result-line span { color: var(--text); }
+  .effective-bar {
+    display: flex; gap: 3px; margin-top: 8px;
+  }
+  .eff-dot {
+    width: 18px; height: 6px; border-radius: 3px; background: var(--border);
+  }
+  .eff-dot.active { background: var(--green); }
+
+  .suggestions-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px;
+  }
+  .suggestions-card h3 { font-size: 15px; color: var(--accent); margin-bottom: 14px; }
+  .suggestion-item {
+    display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; font-size: 13px;
+  }
+  .suggestion-icon { color: var(--accent); flex-shrink: 0; font-size: 15px; }
+  .priority-box {
+    margin-top: 14px; padding: 10px 14px; background: var(--card2); border-radius: 8px;
+    border-left: 3px solid var(--red); font-size: 13px;
+  }
+  .priority-box .label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+
+  .error-box {
+    background: #2a1010; border: 1px solid var(--red); border-radius: var(--radius);
+    padding: 16px 20px; color: var(--red); font-size: 14px; display: none;
+  }
+  .error-box.visible { display: block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">▶ 绝区零 驱动盘评分</div>
+    <div class="sub">ZZZ Disc Drive Scorer · AI 智能评分</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Character Select -->
+  <div class="char-section">
+    <label>选择角色</label>
+    <select id="charSelect">
+      <option value="">-- 请选择角色 --</option>
+    </select>
+    <div class="char-info" id="charInfo">
+      <div class="char-info-grid" id="charInfoGrid"></div>
+    </div>
+  </div>
+
+  <!-- 6 Disc Cards -->
+  <div class="discs-grid" id="discsGrid"></div>
+
+  <!-- Score Button -->
+  <button class="score-btn" id="scoreBtn" onclick="submitScore()">⚡ 开始 AI 评分</button>
+
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div style="color:var(--text2);font-size:14px;">AI 正在分析驱动盘数据…</div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-box" id="errorBox"></div>
+
+  <!-- Results -->
+  <div class="results" id="results"></div>
+
+</div>
+
+<!-- Datalists -->
+<datalist id="setList"></datalist>
+
+<script>
+let charData = null;
+let selectedChar = null;
+
+const SLOT_LABELS = ["","生命","攻击","防御","暴击/穿透","输出","伤害/能量"];
+
+async function init() {
+  const res = await fetch("/api/characters");
+  charData = await res.json();
+
+  // Populate character select
+  const sel = document.getElementById("charSelect");
+  charData.characters.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c.name;
+    opt.textContent = `${c.name}（${c.role} · ${c.element}）`;
+    sel.appendChild(opt);
+  });
+
+  // Populate set datalist
+  const dl = document.getElementById("setList");
+  charData.sets.forEach(s => {
+    const opt = document.createElement("option");
+    opt.value = s;
+    dl.appendChild(opt);
+  });
+
+  buildDiscCards();
+}
+
+function buildDiscCards() {
+  const grid = document.getElementById("discsGrid");
+  grid.innerHTML = "";
+  for (let i = 1; i <= 6; i++) {
+    grid.appendChild(buildDiscCard(i));
+  }
+}
+
+function buildDiscCard(slot) {
+  const card = document.createElement("div");
+  card.className = "disc-card";
+  card.id = `disc-${slot}`;
+
+  const mainOptions = (charData.main_stats_by_slot[String(slot)] || [])
+    .map(s => `<option value="${s}">${s}</option>`).join("");
+
+  const substatOptions = charData.substats
+    .map(s => `<option value="${s}">${s}</option>`).join("");
+
+  let subRows = "";
+  for (let j = 1; j <= 4; j++) {
+    subRows += `
+      <div class="substat-row">
+        <select class="field-select" id="disc${slot}_sub${j}_name">
+          <option value="">副属性${j}</option>
+          ${substatOptions}
+        </select>
+        <input type="text" id="disc${slot}_sub${j}_val" placeholder="数值">
+      </div>`;
+  }
+
+  const isFixed = slot <= 3;
+  const mainFixed = {1:"生命值", 2:"攻击力", 3:"防御力"}[slot] || "";
+
+  card.innerHTML = `
+    <div class="disc-header">
+      <div class="disc-num">${slot}</div>
+      <div>
+        <div class="disc-title">${slot}号位驱动盘</div>
+        <div style="font-size:11px;color:var(--text2)">${SLOT_LABELS[slot]}</div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label>套装名称</label>
+      <input type="text" id="disc${slot}_set" list="setList" placeholder="输入或选择套装…">
+    </div>
+    <div class="field-group">
+      <label>主属性</label>
+      ${isFixed
+        ? `<input type="text" id="disc${slot}_main" value="${mainFixed}" readonly style="opacity:.6;cursor:default">`
+        : `<select class="field-select" id="disc${slot}_main"><option value="">选择主属性</option>${mainOptions}</select>`
+      }
+    </div>
+    <div class="field-group">
+      <label>副属性（最多4条）</label>
+      ${subRows}
+    </div>`;
+  return card;
+}
+
+document.getElementById("charSelect").addEventListener("change", function() {
+  const name = this.value;
+  if (!name || !charData) {
+    selectedChar = null;
+    document.getElementById("charInfo").classList.remove("visible");
+    return;
+  }
+  selectedChar = charData.characters.find(c => c.name === name);
+  if (!selectedChar) return;
+
+  const grid = document.getElementById("charInfoGrid");
+  grid.innerHTML = `
+    <div class="char-info-item">定位：<span>${selectedChar.role}</span></div>
+    <div class="char-info-item">属性：<span>${selectedChar.element}</span></div>
+    <div class="char-info-item">推荐套装：<span>${selectedChar.recommended_sets.join(" / ")}</span></div>
+    <div class="char-info-item">优先副属性：<span>${selectedChar.priority_substats.join("、")}</span></div>
+    <div class="char-info-item" style="flex:1 1 100%">备注：<span>${selectedChar.substat_notes}</span></div>
+  `;
+  document.getElementById("charInfo").classList.add("visible");
+});
+
+function collectDiscs() {
+  const discs = [];
+  for (let i = 1; i <= 6; i++) {
+    const setEl = document.getElementById(`disc${i}_set`);
+    const mainEl = document.getElementById(`disc${i}_main`);
+    const substats = [];
+    for (let j = 1; j <= 4; j++) {
+      const name = document.getElementById(`disc${i}_sub${j}_name`).value;
+      const value = document.getElementById(`disc${i}_sub${j}_val`).value.trim();
+      if (name && value) substats.push({ name, value });
+    }
+    discs.push({
+      slot: i,
+      set_name: setEl ? setEl.value.trim() : "",
+      main_stat: mainEl ? mainEl.value : "",
+      substats
+    });
+  }
+  return discs;
+}
+
+async function submitScore() {
+  const charName = document.getElementById("charSelect").value;
+  if (!charName) { alert("请先选择角色"); return; }
+
+  const discs = collectDiscs();
+  const emptyDiscs = discs.filter(d => !d.set_name && !d.main_stat && d.substats.length === 0);
+  if (emptyDiscs.length === 6) { alert("请至少填写一个驱动盘的信息"); return; }
+
+  document.getElementById("results").classList.remove("visible");
+  document.getElementById("errorBox").classList.remove("visible");
+  document.getElementById("loading").classList.add("visible");
+  document.getElementById("scoreBtn").disabled = true;
+
+  try {
+    const res = await fetch("/api/score", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ character: charName, discs })
+    });
+    const data = await res.json();
+    document.getElementById("loading").classList.remove("visible");
+    if (data.error) {
+      showError(data.error);
+    } else {
+      renderResults(data);
+    }
+  } catch(e) {
+    document.getElementById("loading").classList.remove("visible");
+    showError("网络请求失败：" + e.message);
+  } finally {
+    document.getElementById("scoreBtn").disabled = false;
+  }
+}
+
+function showError(msg) {
+  const box = document.getElementById("errorBox");
+  box.textContent = "❌ " + msg;
+  box.classList.add("visible");
+}
+
+function gradeColor(g) {
+  return { S:"grade-S", A:"grade-A", B:"grade-B", C:"grade-C", D:"grade-D" }[g] || "grade-C";
+}
+
+function scoreToGrade(s) {
+  if (s >= 90) return "S";
+  if (s >= 75) return "A";
+  if (s >= 60) return "B";
+  if (s >= 40) return "C";
+  return "D";
+}
+
+function renderResults(data) {
+  const el = document.getElementById("results");
+  const grade = data.overall_grade || scoreToGrade(data.overall_score);
+
+  let discCards = "";
+  (data.discs || []).forEach(d => {
+    const dg = d.grade || scoreToGrade(d.score);
+    const eff = d.effective_substats || 0;
+    let dots = "";
+    for (let i = 0; i < 4; i++) dots += `<div class="eff-dot${i < eff ? " active" : ""}"></div>`;
+
+    discCards += `
+    <div class="disc-result-card">
+      <div class="disc-result-header">
+        <div class="disc-result-grade ${gradeColor(dg)}">${dg}</div>
+        <div>
+          <div class="disc-result-score">${d.score}</div>
+          <div class="disc-result-slot">${d.slot}号位</div>
+        </div>
+      </div>
+      <div class="disc-result-line">套装：<span>${d.set_eval || "—"}</span></div>
+      <div class="disc-result-line">主属性：<span>${d.main_stat_eval || "—"}</span></div>
+      <div class="disc-result-line">副属性：<span>${d.substat_eval || "—"}</span></div>
+      <div class="disc-result-line">${d.comment || ""}</div>
+      <div class="effective-bar" title="有效词条数">${dots}</div>
+    </div>`;
+  });
+
+  const suggestions = (data.suggestions || []).map(s =>
+    `<div class="suggestion-item"><span class="suggestion-icon">◆</span><span>${s}</span></div>`
+  ).join("");
+
+  el.innerHTML = `
+    <div class="overall-card">
+      <div class="overall-top">
+        <div class="grade-badge ${gradeColor(grade)}">${grade}</div>
+        <div class="overall-info">
+          <div class="score-num">${data.overall_score}</div>
+          <div class="score-label">综合评分 / 100</div>
+        </div>
+      </div>
+      <div class="overall-comment">${data.overall_comment || ""}</div>
+    </div>
+
+    <div class="discs-result-grid">${discCards}</div>
+
+    <div class="suggestions-card">
+      <h3>◈ 优化建议</h3>
+      ${suggestions}
+      ${data.priority_upgrades ? `
+      <div class="priority-box">
+        <div class="label">🔥 优先处理</div>
+        ${data.priority_upgrades}
+      </div>` : ""}
+    </div>
+  `;
+
+  el.classList.add("visible");
+  el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+init();
+</script>
+</body>
+</html>
