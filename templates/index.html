@@ -671,8 +671,10 @@ function renderResults(data) {
           <div class="score-num">${data.overall_score}</div>
           <div class="score-label">综合评分 / 100</div>
         </div>
+        ${data.meta_tier ? `<div style="margin-left:auto;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;text-align:center"><div style="font-size:11px;color:var(--text2)">版本强度</div><div style="font-size:20px;font-weight:900;color:var(--accent)">${data.meta_tier}</div></div>` : ""}
       </div>
       <div class="overall-comment">${data.overall_comment || ""}</div>
+      ${data.set_synergy ? `<div style="margin-top:10px;padding:10px 14px;background:var(--card2);border-radius:8px;border-left:3px solid var(--blue);font-size:13px;color:var(--text2)"><span style="color:var(--blue)">套装协同：</span>${data.set_synergy}</div>` : ""}
     </div>
 
     <div class="discs-result-grid">${discCards}</div>
