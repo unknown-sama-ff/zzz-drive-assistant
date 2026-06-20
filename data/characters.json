@@ -3,6 +3,7 @@
     {
       "id": "ellen",
       "name": "艾莲",
+      "tier": "T2",
       "role": "主C",
       "element": "冰",
       "recommended_sets": ["极地重金属"],
@@ -19,6 +20,7 @@
     {
       "id": "zhu_yuan",
       "name": "朱鸢",
+      "tier": "T2",
       "role": "主C",
       "element": "以太",
       "recommended_sets": ["啄木鸟电音"],
@@ -35,6 +37,7 @@
     {
       "id": "soldier_11",
       "name": "11号",
+      "tier": "T2",
       "role": "主C",
       "element": "火",
       "recommended_sets": ["震星迪斯科"],
@@ -51,6 +54,7 @@
     {
       "id": "grace",
       "name": "格莉丝",
+      "tier": "T3",
       "role": "副C/异常",
       "element": "电",
       "recommended_sets": ["极地重金属", "震星迪斯科"],
@@ -67,6 +71,7 @@
     {
       "id": "rina",
       "name": "丽娜",
+      "tier": "T3",
       "role": "辅助",
       "element": "电",
       "recommended_sets": ["骑士的征战之路", "震星迪斯科"],
@@ -83,6 +88,7 @@
     {
       "id": "lycaon",
       "name": "莱卡恩",
+      "tier": "T2",
       "role": "辅助/控制",
       "element": "冰",
       "recommended_sets": ["骑士的征战之路", "极地重金属"],
@@ -99,6 +105,7 @@
     {
       "id": "cang_jiao",
       "name": "苍角",
+      "tier": "T2",
       "role": "辅助/坦克",
       "element": "以太",
       "recommended_sets": ["骑士的征战之路"],
@@ -115,6 +122,7 @@
     {
       "id": "anby",
       "name": "安比",
+      "tier": "T4",
       "role": "副C/击破",
       "element": "电",
       "recommended_sets": ["震星迪斯科"],
@@ -131,6 +139,7 @@
     {
       "id": "nicole",
       "name": "妮可",
+      "tier": "T1",
       "role": "辅助/减防",
       "element": "以太",
       "recommended_sets": ["骑士的征战之路", "啄木鸟电音"],
@@ -147,6 +156,7 @@
     {
       "id": "nekomata",
       "name": "猫又",
+      "tier": "T4",
       "role": "主C",
       "element": "物理",
       "recommended_sets": ["骑士的征战之路", "震星迪斯科"],
@@ -163,6 +173,7 @@
     {
       "id": "piper",
       "name": "派派",
+      "tier": "T3",
       "role": "副C/异常",
       "element": "物理",
       "recommended_sets": ["骑士的征战之路", "震星迪斯科"],
@@ -179,6 +190,7 @@
     {
       "id": "koleda",
       "name": "珂蕾妲",
+      "tier": "T3",
       "role": "辅助/击破",
       "element": "火",
       "recommended_sets": ["震星迪斯科"],

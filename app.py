@@ -66,6 +66,8 @@ SUBSTAT_THRESHOLDS = {
 
 def build_prompt(character_name, discs, char_info):
     role = char_info.get("role", "主C") if char_info else "主C"
+    tier = char_info.get("tier", "") if char_info else ""
+    tier_hint = f"（该角色在2.4版本强度梯队为 {tier}，请据此校准 meta_tier 评级）" if tier else ""
     weights = ROLE_WEIGHTS.get(role, {"set": 15, "main": 25, "sub": 60})
 
     # Build set usage summary for synergy analysis
@@ -135,7 +137,8 @@ def build_prompt(character_name, discs, char_info):
 
 ## 角色信息
 角色名：{character_name}
-角色定位：{role}
+角色定位：{role}{f" | 版本梯队：{tier}" if tier else ""}
+{tier_hint}
 {char_context}
 
 ## 当前套装激活效果
