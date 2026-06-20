@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.pyo
+wiki_data/
+write_html.py
+.env
+*.log

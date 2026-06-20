@@ -3,34 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>绝区零 驱动盘评分助手</title>
+<title>ZZZ DISC SCORER · 绝区零驱动盘评分</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0d0f;
-    --card: #1a1a1f;
-    --card2: #22222a;
-    --border: #2e2e3a;
-    --accent: #f5c518;
-    --accent2: #e07b39;
-    --text: #e8e8f0;
-    --text2: #888899;
-    --green: #4caf7d;
-    --red: #e05555;
-    --blue: #5599ee;
-    --purple: #9966dd;
-    --radius: 12px;
+    --bg: #0F0F23;
+    --card: #1A1A35;
+    --card2: #27273B;
+    --border: #4C1D95;
+    --accent: #7C3AED;
+    --accent2: #A78BFA;
+    --cta: #F43F5E;
+    --text: #E2E8F0;
+    --text2: #94A3B8;
+    --green: #10B981;
+    --red: #EF4444;
+    --yellow: #F59E0B;
+    --radius: 8px;
+    --glow: 0 0 12px rgba(124,58,237,0.5);
+    --glow-cta: 0 0 16px rgba(244,63,94,0.5);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; min-height: 100vh; }
 
   header {
-    background: linear-gradient(135deg, #1a1020 0%, #0d0d1a 100%);
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #1a0a2e 0%, #0F0F23 100%);
     border-bottom: 1px solid var(--border);
     padding: 16px 20px;
     display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 2px 20px rgba(124,58,237,0.3);
   }
-  header .logo { font-size: 22px; font-weight: 700; color: var(--accent); letter-spacing: 1px; }
-  header .sub { font-size: 13px; color: var(--text2); }
+  header::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
+  }
+  header .logo {
+    font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 900;
+    color: var(--accent2); letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(124,58,237,0.8), 0 0 20px rgba(124,58,237,0.4);
+  }
+  header .sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text2); letter-spacing: 1px; }
 
   .container { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
 
@@ -38,22 +53,23 @@
   .char-section {
     background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
     padding: 20px; margin-bottom: 24px;
+    box-shadow: var(--glow);
   }
-  .char-section label { font-size: 13px; color: var(--text2); display: block; margin-bottom: 8px; }
+  .char-section label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent2); display: block; margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase; }
   .char-section select {
     width: 100%; max-width: 320px; background: var(--card2); border: 1px solid var(--border);
-    color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 15px; cursor: pointer;
-    outline: none;
+    color: var(--text); padding: 10px 14px; border-radius: var(--radius); font-size: 15px; cursor: pointer;
+    outline: none; transition: border-color .2s, box-shadow .2s;
   }
-  .char-section select:focus { border-color: var(--accent); }
+  .char-section select:focus { border-color: var(--accent); box-shadow: var(--glow); }
   .char-info {
-    margin-top: 14px; padding: 12px 16px; background: var(--card2); border-radius: 8px;
+    margin-top: 14px; padding: 12px 16px; background: var(--card2); border-radius: var(--radius);
     border-left: 3px solid var(--accent); display: none;
   }
   .char-info.visible { display: block; }
   .char-info-grid { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 13px; }
-  .char-info-item { color: var(--text2); }
-  .char-info-item span { color: var(--text); }
+  .char-info-item { color: var(--text2); font-size: 12px; }
+  .char-info-item span { color: var(--accent2); font-family: 'JetBrains Mono', monospace; }
 
   /* Disc grid */
   .discs-grid {
@@ -64,35 +80,71 @@
 
   .disc-card {
     background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px;
-    transition: border-color .2s;
+    transition: border-color .2s, box-shadow .2s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
   }
-  .disc-card:hover { border-color: #44445a; }
-  .disc-card.graded { border-color: var(--accent); }
+  .disc-card:hover { border-color: var(--accent); box-shadow: var(--glow); }
+  .disc-card.graded { border-color: var(--cta); box-shadow: var(--glow-cta); }
 
   .disc-header {
     display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
   }
   .disc-num {
-    width: 28px; height: 28px; background: var(--accent); color: #000;
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 14px; flex-shrink: 0;
+    width: 28px; height: 28px; background: linear-gradient(135deg, var(--accent), var(--cta));
+    color: #fff; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace; font-weight: 700; font-size: 13px; flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(124,58,237,0.6);
   }
-  .disc-title { font-size: 14px; font-weight: 600; }
+  .disc-title { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500; color: var(--accent2); letter-spacing: 1px; }
   .disc-pos-hint { font-size: 11px; color: var(--text2); margin-left: auto; }
 
+  /* OCR button and panel */
+  .ocr-btn {
+    margin-left: auto; background: transparent; border: 1px solid var(--border);
+    color: var(--text2); width: 26px; height: 26px; border-radius: 4px; cursor: pointer;
+    font-size: 13px; display: flex; align-items: center; justify-content: center;
+    transition: border-color .2s, color .2s, box-shadow .2s; flex-shrink: 0;
+  }
+  .ocr-btn:hover { border-color: var(--accent2); color: var(--accent2); box-shadow: 0 0 8px rgba(167,139,250,0.4); }
+  .ocr-panel {
+    display: none; margin-bottom: 12px; padding: 10px 12px;
+    background: var(--card2); border-radius: var(--radius); border: 1px solid var(--border);
+  }
+  .ocr-panel.open { display: block; }
+  .ocr-panel-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .ocr-file-input {
+    flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text2); padding: 5px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;
+  }
+  .ocr-file-input::file-selector-button {
+    background: var(--card); border: 1px solid var(--border); color: var(--accent2);
+    padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; margin-right: 6px;
+  }
+  .ocr-go-btn {
+    background: linear-gradient(135deg, var(--accent), var(--cta)); color: #fff;
+    border: none; border-radius: 4px; padding: 5px 12px; font-size: 12px;
+    font-family: 'JetBrains Mono', monospace; cursor: pointer; white-space: nowrap;
+    transition: opacity .2s; flex-shrink: 0;
+  }
+  .ocr-go-btn:hover { opacity: .85; }
+  .ocr-go-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .ocr-status { font-size: 11px; margin-top: 6px; color: var(--text2); font-family: 'JetBrains Mono', monospace; }
+
   .field-group { margin-bottom: 10px; }
-  .field-group label { font-size: 11px; color: var(--text2); display: block; margin-bottom: 4px; }
+  .field-group label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text2); display: block; margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
 
   input[type="text"], select.field-select {
     width: 100%; background: var(--card2); border: 1px solid var(--border);
-    color: var(--text); padding: 7px 10px; border-radius: 6px; font-size: 13px; outline: none;
+    color: var(--text); padding: 7px 10px; border-radius: var(--radius); font-size: 13px; outline: none;
+    transition: border-color .2s, box-shadow .2s;
   }
-  input[type="text"]:focus, select.field-select:focus { border-color: var(--accent); }
-  input[type="text"]::placeholder { color: #555566; }
+  input[type="text"]:focus, select.field-select:focus { border-color: var(--accent); box-shadow: var(--glow); }
+  input[type="text"]::placeholder { color: #555575; }
 
   .substat-row { display: flex; gap: 6px; margin-bottom: 6px; }
   .substat-row select { flex: 2; }
-  .substat-row input { flex: 1; min-width: 0; }
+  .substat-row input { flex: 1; min-width: 0; font-family: 'JetBrains Mono', monospace; }
 
   /* Datalist hint */
   .set-input-wrap { position: relative; }
@@ -100,14 +152,15 @@
   /* Score button */
   .score-btn {
     display: block; width: 100%; max-width: 400px; margin: 0 auto 32px;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    color: #000; font-size: 16px; font-weight: 700; padding: 14px;
-    border: none; border-radius: var(--radius); cursor: pointer; letter-spacing: 1px;
-    transition: opacity .2s, transform .1s;
+    background: linear-gradient(135deg, var(--cta) 0%, #BE185D 100%);
+    color: #fff; font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 700; padding: 14px;
+    border: none; border-radius: var(--radius); cursor: pointer; letter-spacing: 2px;
+    transition: opacity .2s, transform .1s, box-shadow .2s;
+    box-shadow: var(--glow-cta);
   }
-  .score-btn:hover { opacity: .9; }
+  .score-btn:hover { opacity: .9; box-shadow: 0 0 24px rgba(244,63,94,0.7); }
   .score-btn:active { transform: scale(.98); }
-  .score-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .score-btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
 
   /* Loading */
   .loading {
@@ -118,6 +171,7 @@
     width: 40px; height: 40px; border: 3px solid var(--border);
     border-top-color: var(--accent); border-radius: 50%;
     animation: spin .8s linear infinite; margin: 0 auto 12px;
+    box-shadow: 0 0 12px rgba(124,58,237,0.5);
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -126,23 +180,25 @@
   .results.visible { display: block; }
 
   .overall-card {
-    background: linear-gradient(135deg, #1e1a10 0%, #1a1220 100%);
+    background: linear-gradient(135deg, #1a0a2e 0%, #1A1A35 100%);
     border: 1px solid var(--accent); border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+    box-shadow: var(--glow);
   }
   .overall-top { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
   .grade-badge {
-    width: 72px; height: 72px; border-radius: 50%;
+    width: 72px; height: 72px; border-radius: var(--radius);
     display: flex; align-items: center; justify-content: center;
-    font-size: 32px; font-weight: 900; flex-shrink: 0;
+    font-family: 'Orbitron', monospace; font-size: 30px; font-weight: 900; flex-shrink: 0;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   }
-  .grade-S { background: linear-gradient(135deg,#f5c518,#e07b39); color: #000; }
-  .grade-A { background: linear-gradient(135deg,#7ec8e3,#4488cc); color: #000; }
-  .grade-B { background: linear-gradient(135deg,#4caf7d,#2e8b57); color: #000; }
-  .grade-C { background: linear-gradient(135deg,#aaa,#666); color: #000; }
-  .grade-D { background: linear-gradient(135deg,#e05555,#992222); color: #fff; }
+  .grade-S { background: linear-gradient(135deg,var(--cta),#BE185D); color: #fff; box-shadow: var(--glow-cta); }
+  .grade-A { background: linear-gradient(135deg,var(--accent),var(--accent2)); color: #fff; box-shadow: var(--glow); }
+  .grade-B { background: linear-gradient(135deg,#10B981,#059669); color: #fff; }
+  .grade-C { background: linear-gradient(135deg,#475569,#334155); color: #fff; }
+  .grade-D { background: linear-gradient(135deg,var(--red),#991B1B); color: #fff; }
 
-  .overall-info .score-num { font-size: 42px; font-weight: 900; color: var(--accent); line-height: 1; }
-  .overall-info .score-label { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .overall-info .score-num { font-family: 'Orbitron', monospace; font-size: 42px; font-weight: 900; color: var(--accent2); line-height: 1; text-shadow: 0 0 10px rgba(167,139,250,0.6); }
+  .overall-info .score-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text2); margin-top: 2px; letter-spacing: 1px; }
   .overall-comment { margin-top: 14px; font-size: 14px; color: var(--text2); line-height: 1.7; }
 
   .discs-result-grid {
@@ -153,42 +209,38 @@
 
   .disc-result-card {
     background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   }
   .disc-result-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
   .disc-result-grade {
-    width: 32px; height: 32px; border-radius: 6px;
+    width: 32px; height: 32px; border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px; font-weight: 800; flex-shrink: 0;
+    font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 800; flex-shrink: 0;
   }
-  .disc-result-score { font-size: 22px; font-weight: 800; color: var(--accent); }
-  .disc-result-slot { font-size: 12px; color: var(--text2); }
-  .disc-result-stars { color: var(--accent); font-size: 12px; margin-bottom: 6px; }
+  .disc-result-score { font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 800; color: var(--accent2); }
+  .disc-result-slot { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text2); letter-spacing: 1px; }
+  .disc-result-stars { color: var(--yellow); font-size: 12px; margin-bottom: 6px; }
   .disc-result-line { font-size: 12px; color: var(--text2); margin-bottom: 4px; line-height: 1.5; }
   .disc-result-line span { color: var(--text); }
-  .effective-bar {
-    display: flex; gap: 3px; margin-top: 8px;
-  }
-  .eff-dot {
-    width: 18px; height: 6px; border-radius: 3px; background: var(--border);
-  }
-  .eff-dot.active { background: var(--green); }
+  .effective-bar { display: flex; gap: 3px; margin-top: 8px; }
+  .eff-dot { width: 18px; height: 5px; border-radius: 2px; background: var(--card2); border: 1px solid var(--border); }
+  .eff-dot.active { background: var(--green); border-color: var(--green); box-shadow: 0 0 6px rgba(16,185,129,0.6); }
 
   .suggestions-card {
     background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px;
+    box-shadow: var(--glow);
   }
-  .suggestions-card h3 { font-size: 15px; color: var(--accent); margin-bottom: 14px; }
-  .suggestion-item {
-    display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; font-size: 13px;
-  }
-  .suggestion-icon { color: var(--accent); flex-shrink: 0; font-size: 15px; }
+  .suggestions-card h3 { font-family: 'Orbitron', monospace; font-size: 13px; color: var(--accent2); margin-bottom: 14px; letter-spacing: 2px; }
+  .suggestion-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; font-size: 13px; }
+  .suggestion-icon { color: var(--cta); flex-shrink: 0; font-size: 15px; }
   .priority-box {
-    margin-top: 14px; padding: 10px 14px; background: var(--card2); border-radius: 8px;
-    border-left: 3px solid var(--red); font-size: 13px;
+    margin-top: 14px; padding: 10px 14px; background: var(--card2); border-radius: var(--radius);
+    border-left: 3px solid var(--cta); font-size: 13px;
   }
-  .priority-box .label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+  .priority-box .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text2); margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
 
   .error-box {
-    background: #2a1010; border: 1px solid var(--red); border-radius: var(--radius);
+    background: rgba(239,68,68,0.1); border: 1px solid var(--red); border-radius: var(--radius);
     padding: 16px 20px; color: var(--red); font-size: 14px; display: none;
   }
   .error-box.visible { display: block; }
@@ -196,56 +248,63 @@
   /* Settings button */
   .settings-btn {
     margin-left: auto; background: transparent; border: 1px solid var(--border);
-    color: var(--text2); padding: 7px 12px; border-radius: 8px; cursor: pointer;
-    font-size: 15px; transition: border-color .2s, color .2s;
+    color: var(--text2); padding: 7px 12px; border-radius: var(--radius); cursor: pointer;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    transition: border-color .2s, color .2s, box-shadow .2s;
   }
-  .settings-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .settings-btn:hover { border-color: var(--accent); color: var(--accent2); box-shadow: var(--glow); }
 
   /* Settings modal */
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100;
+    position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100;
     display: none; align-items: center; justify-content: center; padding: 16px;
+    backdrop-filter: blur(4px);
   }
   .modal-overlay.visible { display: flex; }
   .modal {
-    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 24px; width: 100%; max-width: 480px;
+    background: var(--card); border: 1px solid var(--accent); border-radius: var(--radius);
+    padding: 24px; width: 100%; max-width: 480px; box-shadow: var(--glow);
   }
   .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-  .modal-title { font-size: 16px; font-weight: 700; color: var(--accent); }
-  .modal-close { background: none; border: none; color: var(--text2); font-size: 20px; cursor: pointer; line-height: 1; padding: 2px 6px; }
-  .modal-close:hover { color: var(--text); }
+  .modal-title { font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 700; color: var(--accent2); letter-spacing: 2px; }
+  .modal-close { background: none; border: none; color: var(--text2); font-size: 20px; cursor: pointer; line-height: 1; padding: 2px 6px; transition: color .2s; }
+  .modal-close:hover { color: var(--cta); }
 
   .setting-field { margin-bottom: 16px; }
-  .setting-field label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 6px; }
+  .setting-field label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text2); display: block; margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
   .setting-field input, .setting-field select {
     width: 100%; background: var(--card2); border: 1px solid var(--border);
-    color: var(--text); padding: 9px 12px; border-radius: 8px; font-size: 13px; outline: none;
+    color: var(--text); padding: 9px 12px; border-radius: var(--radius); font-size: 13px; outline: none;
+    transition: border-color .2s, box-shadow .2s;
   }
-  .setting-field input:focus, .setting-field select:focus { border-color: var(--accent); }
+  .setting-field input:focus, .setting-field select:focus { border-color: var(--accent); box-shadow: var(--glow); }
   .setting-field input::placeholder { color: #55556a; }
 
   .setting-hint { font-size: 11px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
-  .setting-hint a { color: var(--blue); text-decoration: none; }
+  .setting-hint a { color: var(--accent2); text-decoration: none; }
 
   .provider-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
   .ptab {
-    flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 8px;
-    background: var(--card2); color: var(--text2); cursor: pointer; font-size: 13px;
+    flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--card2); color: var(--text2); cursor: pointer;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
     text-align: center; transition: all .15s;
   }
-  .ptab.active { border-color: var(--accent); color: var(--accent); background: #1e1a0a; }
+  .ptab.active { border-color: var(--accent); color: var(--accent2); background: rgba(124,58,237,0.15); box-shadow: var(--glow); }
 
   .modal-save-btn {
-    width: 100%; padding: 11px; background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #000; font-weight: 700; border: none; border-radius: 8px; cursor: pointer;
-    font-size: 14px; margin-top: 4px;
+    width: 100%; padding: 11px;
+    background: linear-gradient(135deg, var(--cta), #BE185D);
+    color: #fff; font-family: 'Orbitron', monospace; font-weight: 700; border: none;
+    border-radius: var(--radius); cursor: pointer; font-size: 13px; margin-top: 4px;
+    letter-spacing: 1px; transition: opacity .2s, box-shadow .2s;
+    box-shadow: var(--glow-cta);
   }
   .modal-save-btn:hover { opacity: .9; }
 
   .api-status {
-    font-size: 11px; margin-top: 6px; padding: 6px 10px; border-radius: 6px;
-    background: var(--card2); color: var(--text2);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-top: 6px;
+    padding: 6px 10px; border-radius: var(--radius); background: var(--card2); color: var(--text2);
   }
   .api-status.set { color: var(--green); }
 </style>
@@ -254,17 +313,17 @@
 
 <header>
   <div>
-    <div class="logo">▶ 绝区零 驱动盘评分</div>
-    <div class="sub">ZZZ Disc Drive Scorer · AI 智能评分</div>
+    <div class="logo">▶ ZZZ DISC SCORER</div>
+    <div class="sub">DRIVE DISC ANALYZER · AI SCORING SYSTEM</div>
   </div>
-  <button class="settings-btn" onclick="openSettings()" title="API 设置">⚙ 设置</button>
+  <button class="settings-btn" onclick="openSettings()" title="API 设置">⚙ CONFIG</button>
 </header>
 
 <!-- Settings Modal -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">⚙ API 设置</div>
+      <div class="modal-title">⚙ API CONFIG</div>
       <button class="modal-close" onclick="closeSettings()">×</button>
     </div>
 
@@ -316,12 +375,12 @@
   <div class="discs-grid" id="discsGrid"></div>
 
   <!-- Score Button -->
-  <button class="score-btn" id="scoreBtn" onclick="submitScore()">⚡ 开始 AI 评分</button>
+  <button class="score-btn" id="scoreBtn" onclick="submitScore()">▶ AI SCORING ANALYSIS</button>
 
   <!-- Loading -->
   <div class="loading" id="loading">
     <div class="spinner"></div>
-    <div style="color:var(--text2);font-size:14px;">AI 正在分析驱动盘数据…</div>
+    <div style="color:var(--text2);font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:1px;">ANALYZING DISC DATA…</div>
   </div>
 
   <!-- Error -->
@@ -352,11 +411,10 @@ const MAIN_SUBSTAT_EXCLUDE = {
   "暴击率%":       ["暴击率%"],
   "暴击伤害%":     ["暴击伤害%"],
   "异常精通":      ["异常精通"],
-  "异常掌控":      ["异常掌控"],
-  "能量自动回复%": ["能量自动回复"],
 };
 
 function refreshSubstatOptions(slot) {
+  if (slot <= 3) return; // slots 1-3 have fixed main stats; no exclusion needed
   const mainEl = document.getElementById(`disc${slot}_main`);
   const mainStat = mainEl ? mainEl.value : "";
   const excluded = MAIN_SUBSTAT_EXCLUDE[mainStat] || [];
@@ -444,6 +502,74 @@ document.getElementById("settingsModal").addEventListener("click", function(e) {
 updateApiStatus(loadSettings());
 // ──────────────────────────────────────────────────────────
 
+function toggleOcr(slot) {
+  const panel = document.getElementById(`disc${slot}_ocr_panel`);
+  panel.classList.toggle('open');
+}
+
+async function ocrDisc(slot) {
+  const fileInput = document.getElementById(`disc${slot}_ocr_file`);
+  const statusEl = document.getElementById(`disc${slot}_ocr_status`);
+  const btn = document.getElementById(`disc${slot}_ocr_btn`);
+  const file = fileInput.files[0];
+  if (!file) { statusEl.style.color = 'var(--red)'; statusEl.textContent = '请先选择图片'; return; }
+
+  statusEl.style.color = 'var(--text2)';
+  statusEl.textContent = '识别中…';
+  btn.disabled = true;
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const dataUrl = e.target.result;
+    const comma = dataUrl.indexOf(',');
+    const b64 = dataUrl.slice(comma + 1);
+    const mime = file.type || 'image/png';
+
+    const cfg = loadSettings();
+    try {
+      const res = await fetch('/api/ocr', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image: b64, mime_type: mime,
+          provider: cfg.provider || '',
+          api_key: cfg.api_key || '',
+          api_base: cfg.api_base || '',
+          model: cfg.model || ''
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      if (data.set_name) document.getElementById(`disc${slot}_set`).value = data.set_name;
+      if (data.main_stat) {
+        const mainEl = document.getElementById(`disc${slot}_main`);
+        if (mainEl) {
+          mainEl.value = data.main_stat;
+          mainEl.dispatchEvent(new Event('change'));
+        }
+      }
+      (data.substats || []).forEach((sub, i) => {
+        const n = i + 1;
+        if (n > 4) return;
+        const nameEl = document.getElementById(`disc${slot}_sub${n}_name`);
+        const valEl = document.getElementById(`disc${slot}_sub${n}_val`);
+        if (nameEl && sub.name) nameEl.value = sub.name;
+        if (valEl && sub.value) valEl.value = sub.value;
+      });
+
+      statusEl.style.color = 'var(--green)';
+      statusEl.textContent = '✓ 识别成功';
+    } catch(err) {
+      statusEl.style.color = 'var(--red)';
+      statusEl.textContent = '✗ ' + err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
 async function init() {
   const res = await fetch("/api/characters");
   charData = await res.json();
@@ -507,9 +633,17 @@ function buildDiscCard(slot) {
     <div class="disc-header">
       <div class="disc-num">${slot}</div>
       <div>
-        <div class="disc-title">${slot}号位驱动盘</div>
-        <div style="font-size:11px;color:var(--text2)">${SLOT_LABELS[slot]}</div>
+        <div class="disc-title">DISC-0${slot}</div>
+        <div style="font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace;letter-spacing:1px">${SLOT_LABELS[slot].toUpperCase()}</div>
       </div>
+      <button class="ocr-btn" onclick="toggleOcr(${slot})" title="截图识别">📷</button>
+    </div>
+    <div class="ocr-panel" id="disc${slot}_ocr_panel">
+      <div class="ocr-panel-row">
+        <input type="file" class="ocr-file-input" id="disc${slot}_ocr_file" accept="image/*">
+        <button class="ocr-go-btn" id="disc${slot}_ocr_btn" onclick="ocrDisc(${slot})">识别</button>
+      </div>
+      <div class="ocr-status" id="disc${slot}_ocr_status"></div>
     </div>
     <div class="field-group">
       <label>套装名称</label>
@@ -671,10 +805,10 @@ function renderResults(data) {
           <div class="score-num">${data.overall_score}</div>
           <div class="score-label">综合评分 / 100</div>
         </div>
-        ${data.meta_tier ? `<div style="margin-left:auto;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;text-align:center"><div style="font-size:11px;color:var(--text2)">版本强度</div><div style="font-size:20px;font-weight:900;color:var(--accent)">${data.meta_tier}</div></div>` : ""}
+        ${data.meta_tier ? `<div style="margin-left:auto;background:var(--card2);border:1px solid var(--accent);border-radius:8px;padding:6px 14px;text-align:center;box-shadow:var(--glow)"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text2);letter-spacing:1px">META TIER</div><div style="font-family:'Orbitron',monospace;font-size:20px;font-weight:900;color:var(--accent2)">${data.meta_tier}</div></div>` : ""}
       </div>
       <div class="overall-comment">${data.overall_comment || ""}</div>
-      ${data.set_synergy ? `<div style="margin-top:10px;padding:10px 14px;background:var(--card2);border-radius:8px;border-left:3px solid var(--blue);font-size:13px;color:var(--text2)"><span style="color:var(--blue)">套装协同：</span>${data.set_synergy}</div>` : ""}
+      ${data.set_synergy ? `<div style="margin-top:10px;padding:10px 14px;background:var(--card2);border-radius:8px;border-left:3px solid var(--accent2);font-size:13px;color:var(--text2)"><span style="color:var(--accent2);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px">SET SYNERGY：</span>${data.set_synergy}</div>` : ""}
     </div>
 
     <div class="discs-result-grid">${discCards}</div>

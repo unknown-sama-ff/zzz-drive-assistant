@@ -83,11 +83,28 @@ def build_prompt(character_name, discs, char_info):
             active.append(f"2件套激活：{effect['2pc']}")
         if cnt >= 4 and effect.get("4pc"):
             active.append(f"4件套激活：{effect['4pc']}")
+        waste_note = f"  ⚠️ {cnt}件同套装，第5-6件无额外效果（套装最多激活4件套），存在浪费！" if cnt >= 5 else ""
         if active:
-            set_summary_lines.append(f"  - {s}×{cnt}：{' | '.join(active)}")
+            set_summary_lines.append(f"  - {s}×{cnt}：{' | '.join(active)}{waste_note}")
         else:
-            set_summary_lines.append(f"  - {s}×{cnt}：{'（效果未知，请据实评估）' if s not in SET_EFFECTS else '（未达激活件数）'}")
+            set_summary_lines.append(f"  - {s}×{cnt}：{'（效果未知，请据实评估）' if s not in SET_EFFECTS else '（未达激活件数）'}{waste_note}")
     set_summary = "\n".join(set_summary_lines) if set_summary_lines else "  （未填写套装）"
+
+    # Build 4+2 or 2+2+2 recommendation hint when a set has 5 or 6 pieces
+    set_waste_hint = ""
+    wasteful_sets = {s: cnt for s, cnt in set_counter.items() if cnt >= 5}
+    if wasteful_sets:
+        rec_sets = char_info.get("recommended_sets", []) if char_info else []
+        hints = []
+        for s, cnt in wasteful_sets.items():
+            alt_sets = [rs for rs in rec_sets if rs != s]
+            if len(alt_sets) >= 2:
+                hints.append(f"{s}×{cnt}件 → 建议改为「{s}×4+{alt_sets[0]}×2」，或考虑「{alt_sets[0]}×2+{alt_sets[1]}×2+{s}×2」三套2件套方案")
+            elif len(alt_sets) == 1:
+                hints.append(f"{s}×{cnt}件 → 建议改为「{s}×4+{alt_sets[0]}×2」")
+            else:
+                hints.append(f"{s}×{cnt}件 → 建议改为4+2配置，将多余{cnt-4}件换为其他推荐套装的2件套")
+        set_waste_hint = "\n\n## ⚠️ 套装浪费检测（必须在 suggestions 中给出具体替换方案）\n" + "\n".join(f"  - {h}" for h in hints)
 
     # Build disc text
     discs_text = ""
@@ -140,7 +157,7 @@ def build_prompt(character_name, discs, char_info):
 {char_context}
 
 ## 当前套装激活效果
-{set_summary}
+{set_summary}{set_waste_hint}
 
 ## 驱动盘数据（副属性已标注档位供参考）
 {discs_text}
@@ -297,6 +314,70 @@ def call_claude(prompt, api_key, base_url="https://api.anthropic.com", model="cl
         result = json.loads(resp.read().decode("utf-8"))
     return result["content"][0]["text"]
 
+OCR_PROMPT = """你是绝区零（ZZZ）驱动盘识别专家。请从这张游戏截图中提取驱动盘的属性数据。
+
+请严格按以下JSON格式输出，不要添加任何其他文字：
+{
+  "set_name": "<套装名称，如：激素朋克、极地重金属等，若不确定填空字符串>",
+  "main_stat": "<主属性名称，如：攻击力%、暴击率%、冰属性伤害加成%等>",
+  "substats": [
+    {"name": "<副属性名>", "value": "<数值，含%符号如适用>"},
+    ...
+  ]
+}
+
+注意：
+- 副属性最多4条，没有的留空数组
+- 主属性名称规范：攻击力%、防御力%、生命值%、暴击率%、暴击伤害%、异常精通、异常掌控、穿透率%、冰/火/电/以太/物理属性伤害加成%、能量自动回复%
+- 数值保留原始格式（百分比保留%）"""
+
+
+def call_ai_vision(image_b64, mime_type, provider=None, api_key=None, api_base=None, model=None):
+    import urllib.request, base64
+
+    if provider == "claude":
+        key = api_key or os.environ.get("ANTHROPIC_API_KEY")
+        if not key:
+            raise ValueError("未配置 Claude API Key")
+        mdl = model or os.environ.get("ANTHROPIC_MODEL") or "claude-haiku-4-5-20251001"
+        base = api_base or os.environ.get("ANTHROPIC_API_BASE") or "https://api.anthropic.com"
+        url = base.rstrip("/") + "/v1/messages"
+        data = json.dumps({
+            "model": mdl, "max_tokens": 1000,
+            "messages": [{"role": "user", "content": [
+                {"type": "image", "source": {"type": "base64", "media_type": mime_type, "data": image_b64}},
+                {"type": "text", "text": OCR_PROMPT}
+            ]}]
+        }).encode("utf-8")
+        req = urllib.request.Request(url, data=data, headers={
+            "Content-Type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01"
+        }, method="POST")
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            result = json.loads(resp.read().decode("utf-8"))
+        return result["content"][0]["text"]
+
+    # OpenAI-compatible vision (openai / custom)
+    key = api_key or os.environ.get("OPENAI_API_KEY")
+    if not key:
+        raise ValueError("未配置 API Key，截图识别需要 OpenAI 或 Claude 的视觉模型")
+    base = api_base or os.environ.get("OPENAI_API_BASE") or "https://api.openai.com"
+    mdl = model or os.environ.get("OPENAI_MODEL") or "gpt-4o-mini"
+    url = base.rstrip("/") + "/v1/chat/completions"
+    data = json.dumps({
+        "model": mdl, "max_tokens": 1000, "temperature": 0.1,
+        "messages": [{"role": "user", "content": [
+            {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{image_b64}"}},
+            {"type": "text", "text": OCR_PROMPT}
+        ]}]
+    }).encode("utf-8")
+    req = urllib.request.Request(url, data=data, headers={
+        "Content-Type": "application/json", "Authorization": f"Bearer {key}"
+    }, method="POST")
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+    return result["choices"][0]["message"]["content"]
+
+
 def parse_ai_response(text):
     # 从 AI 响应中提取 JSON
     text = text.strip()
@@ -306,6 +387,32 @@ def parse_ai_response(text):
     # 移除 JSON 中的注释行（// ...）
     text = re.sub(r"//[^\n]*", "", text)
     return json.loads(text)
+
+@app.route("/api/ocr", methods=["POST"])
+def api_ocr():
+    body = request.get_json()
+    if not body or not body.get("image"):
+        return jsonify({"error": "缺少图片数据"}), 400
+
+    image_b64 = body["image"]
+    mime_type = body.get("mime_type", "image/png")
+    provider = body.get("provider", "")
+    api_key = body.get("api_key", "").strip() or None
+    api_base = body.get("api_base", "").strip() or None
+    model = body.get("model", "").strip() or None
+
+    try:
+        raw = call_ai_vision(image_b64, mime_type, provider=provider, api_key=api_key, api_base=api_base, model=model)
+        result = parse_ai_response(raw)
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 500
+    except json.JSONDecodeError:
+        return jsonify({"error": "识别结果格式异常，请重试"}), 500
+    except Exception as e:
+        return jsonify({"error": f"识别失败：{str(e)}"}), 500
+
+    return jsonify(result)
+
 
 @app.route("/")
 def index():
