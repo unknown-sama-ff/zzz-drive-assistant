@@ -271,6 +271,7 @@
     <div class="provider-tabs">
       <div class="ptab active" id="tab-openai" onclick="switchProvider('openai')">OpenAI</div>
       <div class="ptab" id="tab-claude" onclick="switchProvider('claude')">Claude</div>
+      <div class="ptab" id="tab-deepseek" onclick="switchProvider('deepseek')">DeepSeek</div>
       <div class="ptab" id="tab-custom" onclick="switchProvider('custom')">自定义</div>
     </div>
 
@@ -342,9 +343,10 @@ const SLOT_LABELS = ["","生命","攻击","防御","暴击/穿透","输出","伤
 
 // ── Settings ──────────────────────────────────────────────
 const PROVIDER_DEFAULTS = {
-  openai: { hint: "OpenAI API Key，从 platform.openai.com 获取", model: "gpt-4o-mini", base: "https://api.openai.com" },
-  claude: { hint: "Anthropic API Key，从 console.anthropic.com 获取", model: "claude-haiku-4-5-20251001", base: "https://api.anthropic.com" },
-  custom: { hint: "兼容 OpenAI 格式的第三方 API Key", model: "", base: "" }
+  openai:   { hint: "OpenAI API Key，从 platform.openai.com 获取", model: "gpt-4o-mini", base: "https://api.openai.com" },
+  claude:   { hint: "Anthropic API Key，从 console.anthropic.com 获取", model: "claude-haiku-4-5-20251001", base: "https://api.anthropic.com" },
+  deepseek: { hint: "DeepSeek API Key，从 platform.deepseek.com 获取", model: "deepseek-chat", base: "https://api.deepseek.com" },
+  custom:   { hint: "兼容 OpenAI 格式的第三方 API Key", model: "", base: "" }
 };
 
 function loadSettings() {

@@ -107,12 +107,27 @@ def call_ai_api(prompt, provider=None, api_key=None, api_base=None, model=None):
         mdl = model or os.environ.get("ANTHROPIC_MODEL") or "claude-haiku-4-5-20251001"
         return call_claude(prompt, key, base, mdl)
 
+    if provider == "deepseek":
+        key = api_key or os.environ.get("DEEPSEEK_API_KEY")
+        if not key:
+            raise ValueError("未配置 DeepSeek API Key，请在设置中填写或设置 DEEPSEEK_API_KEY 环境变量")
+        base = api_base or os.environ.get("DEEPSEEK_API_BASE") or "https://api.deepseek.com"
+        mdl = model or os.environ.get("DEEPSEEK_MODEL") or "deepseek-chat"
+        return call_openai(prompt, key, base, mdl)
+
     # openai / custom / 未指定 → 走 OpenAI 兼容接口
     key = api_key or os.environ.get("OPENAI_API_KEY")
     if key:
         base = api_base or os.environ.get("OPENAI_API_BASE") or "https://api.openai.com"
         mdl = model or os.environ.get("OPENAI_MODEL") or "gpt-4o-mini"
         return call_openai(prompt, key, base, mdl)
+
+    # fallback: DeepSeek 环境变量
+    deepseek_key = os.environ.get("DEEPSEEK_API_KEY")
+    if deepseek_key:
+        base = os.environ.get("DEEPSEEK_API_BASE") or "https://api.deepseek.com"
+        mdl = os.environ.get("DEEPSEEK_MODEL") or "deepseek-chat"
+        return call_openai(prompt, deepseek_key, base, mdl)
 
     # 最后 fallback：Claude 环境变量
     claude_key = os.environ.get("ANTHROPIC_API_KEY")
