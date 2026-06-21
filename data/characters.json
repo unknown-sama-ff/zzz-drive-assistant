@@ -796,7 +796,7 @@
       "id": "仪玄",
       "name": "仪玄",
       "tier": "TBD",
-      "role": "击破",
+      "role": "命破",
       "element": "以太",
       "recommended_sets": [
         "云岿如我",
@@ -1237,7 +1237,7 @@
       "id": "真斗",
       "name": "真斗",
       "tier": "TBD",
-      "role": "击破",
+      "role": "命破",
       "element": "火",
       "recommended_sets": [
         "云岿如我",
@@ -1335,7 +1335,7 @@
       "id": "伊德海莉",
       "name": "伊德海莉",
       "tier": "TBD",
-      "role": "击破",
+      "role": "命破",
       "element": "冰",
       "recommended_sets": [
         "云岿如我",
@@ -1559,7 +1559,7 @@
       "id": "般岳",
       "name": "般岳",
       "tier": "TBD",
-      "role": "击破",
+      "role": "命破",
       "element": "火",
       "recommended_sets": [
         "云岿如我",
@@ -1649,7 +1649,7 @@
       "id": "星徽·比利",
       "name": "星徽·比利",
       "tier": "TBD",
-      "role": "击破",
+      "role": "命破",
       "element": "物理",
       "recommended_sets": [
         "云岿如我",

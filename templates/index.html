@@ -141,6 +141,8 @@
     color: #1a2030;
   }
   .char-section select:focus { border-color: var(--glass-border-active); box-shadow: var(--glow); }
+  .char-filters { display: flex; gap: 8px; margin-bottom: 8px; }
+  .char-filters select { flex: 1; margin-bottom: 0; }
   .char-info {
     margin-top: 14px; padding: 12px 16px;
     background: rgba(255,255,255,0.03); border-radius: var(--radius-sm);
@@ -498,6 +500,26 @@
   <!-- Character Select -->
   <div class="glass-card char-section">
     <label>选择角色</label>
+    <div class="char-filters">
+      <select id="filterRole">
+        <option value="">全部职业</option>
+        <option value="强攻">强攻</option>
+        <option value="异常">异常</option>
+        <option value="支援">支援</option>
+        <option value="防护">防护</option>
+        <option value="击破">击破</option>
+        <option value="命破">命破</option>
+      </select>
+      <select id="filterElement">
+        <option value="">全部属性</option>
+        <option value="物理">物理</option>
+        <option value="火">火</option>
+        <option value="冰">冰</option>
+        <option value="电">电</option>
+        <option value="以太">以太</option>
+        <option value="风">风</option>
+      </select>
+    </div>
     <select id="charSelect">
       <option value="">-- 请选择角色 --</option>
     </select>
@@ -731,12 +753,27 @@ async function init() {
 
   // Populate character select
   const sel = document.getElementById("charSelect");
-  charData.characters.forEach(c => {
-    const opt = document.createElement("option");
-    opt.value = c.name;
-    opt.textContent = `${c.name}（${c.role} · ${c.element}）`;
-    sel.appendChild(opt);
-  });
+
+  function populateCharSelect() {
+    const roleFilter = document.getElementById("filterRole").value;
+    const elemFilter = document.getElementById("filterElement").value;
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">-- 请选择角色 --</option>';
+    charData.characters
+      .filter(c => (!roleFilter || c.role === roleFilter) && (!elemFilter || c.element === elemFilter))
+      .forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c.name;
+        opt.textContent = `${c.name}（${c.role} · ${c.element}）`;
+        sel.appendChild(opt);
+      });
+    sel.value = prev;
+    if (!sel.value) sel.dispatchEvent(new Event("change"));
+  }
+
+  document.getElementById("filterRole").addEventListener("change", populateCharSelect);
+  document.getElementById("filterElement").addEventListener("change", populateCharSelect);
+  populateCharSelect();
 
   // Populate set datalist
   const dl = document.getElementById("setList");
