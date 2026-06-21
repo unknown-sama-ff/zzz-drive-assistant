@@ -453,8 +453,41 @@
     <div class="logo">▶ ZZZ DISC SCORER</div>
     <div class="sub">DRIVE DISC ANALYZER · AI SCORING SYSTEM</div>
   </div>
-  <button class="settings-btn" onclick="openSettings()" title="API 设置">⚙ CONFIG</button>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="settings-btn" onclick="openGuide()" title="新手指南">? 指南</button>
+    <button class="settings-btn" onclick="openSettings()" title="API 设置">⚙ CONFIG</button>
+  </div>
 </header>
+
+<!-- Guide Modal -->
+<div class="modal-overlay" id="guideModal" onclick="if(event.target===this)closeGuide()">
+  <div class="glass-card modal" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-title">? 新手指南</div>
+      <button class="modal-close" onclick="closeGuide()">×</button>
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text2);line-height:1.9;padding:4px 0">
+      <div style="color:var(--accent2);font-size:11px;letter-spacing:1px;margin-bottom:12px">使用前请先完成 API 配置，否则无法评分</div>
+
+      <div style="color:var(--text);font-size:13px;margin-bottom:6px">① 配置 API</div>
+      <div style="padding-left:12px;margin-bottom:14px">点击右上角 <b style="color:var(--accent)">⚙ CONFIG</b>，选择 AI 供应商（Claude / OpenAI / DeepSeek），填入 API Key 后保存。</div>
+
+      <div style="color:var(--text);font-size:13px;margin-bottom:6px">② 选择角色</div>
+      <div style="padding-left:12px;margin-bottom:14px">用职业、属性下拉筛选，再从列表中选择你的角色。右侧会显示推荐套装和优先副词条供参考。</div>
+
+      <div style="color:var(--text);font-size:13px;margin-bottom:6px">③ 填入驱动盘</div>
+      <div style="padding-left:12px;margin-bottom:4px"><b style="color:var(--accent)">手动填写：</b>逐个填写 1–6 号位的套装名、主词条和副词条数值。</div>
+      <div style="padding-left:12px;margin-bottom:14px"><b style="color:var(--accent)">📷 一键识图：</b>在游戏中对驱动盘截图，上传后点击「识别填入」，AI 自动识别并填入对应槽位。</div>
+
+      <div style="color:var(--text);font-size:13px;margin-bottom:6px">④ 开始评分</div>
+      <div style="padding-left:12px;margin-bottom:14px">点击底部「开始评分」按钮，AI 会对每块盘打出 S/A/B/C/D 评级，给出总分和优化建议。</div>
+
+      <div style="border-top:1px solid var(--glass-border);padding-top:10px;color:var(--text2);font-size:11px">
+        副词条评分占比最高（约 50–60%），套装搭配和主词条次之。优先堆满角色的核心副词条。
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Settings Modal -->
 <div class="modal-overlay" id="settingsModal">
@@ -644,6 +677,14 @@ function openSettings() {
 
 function closeSettings() {
   document.getElementById("settingsModal").classList.remove("visible");
+}
+
+function openGuide() {
+  document.getElementById("guideModal").classList.add("visible");
+}
+
+function closeGuide() {
+  document.getElementById("guideModal").classList.remove("visible");
 }
 
 function switchProvider(p) {
