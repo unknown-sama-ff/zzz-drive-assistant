@@ -4,7 +4,7 @@
       "id": "ellen",
       "name": "艾莲",
       "tier": "T2",
-      "role": "主C",
+      "role": "强攻",
       "element": "冰",
       "recommended_sets": [
         "极地重金属",
@@ -37,7 +37,7 @@
       "id": "zhu_yuan",
       "name": "朱鸢",
       "tier": "T2",
-      "role": "主C",
+      "role": "强攻",
       "element": "以太",
       "recommended_sets": [
         "啄木鸟电音"
@@ -69,7 +69,7 @@
       "id": "soldier_11",
       "name": "11号",
       "tier": "T2",
-      "role": "主C",
+      "role": "强攻",
       "element": "火",
       "recommended_sets": [
         "炎狱重金属",
@@ -100,13 +100,13 @@
       "id": "grace",
       "name": "格莉丝",
       "tier": "T3",
-      "role": "副C/异常",
+      "role": "异常",
       "element": "电",
       "recommended_sets": [
         "自由蓝调",
-        "摇滚爵士"
+        "混沌重金属"
       ],
-      "set_notes": "自由蓝调4件套+摇滚爵士2件套",
+      "set_notes": "自由蓝调4件套+混沌重金属2件套",
       "main_stats": {
         "4": [
           "异常精通"
@@ -130,7 +130,7 @@
       "id": "rina",
       "name": "丽娜",
       "tier": "T3",
-      "role": "辅助",
+      "role": "支援",
       "element": "电",
       "recommended_sets": [
         "自由蓝调",
@@ -160,7 +160,7 @@
       "id": "lycaon",
       "name": "莱卡恩",
       "tier": "T2",
-      "role": "辅助/控制",
+      "role": "击破",
       "element": "冰",
       "recommended_sets": [
         "震星迪斯科",
@@ -193,7 +193,7 @@
       "id": "cang_jiao",
       "name": "苍角",
       "tier": "T2",
-      "role": "辅助/坦克",
+      "role": "支援",
       "element": "冰",
       "recommended_sets": [
         "摇摆爵士",
@@ -225,7 +225,7 @@
       "id": "anby",
       "name": "安比",
       "tier": "T4",
-      "role": "副C/击破",
+      "role": "击破",
       "element": "电",
       "recommended_sets": [
         "震星迪斯科",
@@ -257,7 +257,7 @@
       "id": "nicole",
       "name": "妮可",
       "tier": "T1",
-      "role": "辅助/减防",
+      "role": "支援",
       "element": "以太",
       "recommended_sets": [
         "自由蓝调",
@@ -290,7 +290,7 @@
       "id": "nekomata",
       "name": "猫又",
       "tier": "T4",
-      "role": "主C",
+      "role": "强攻",
       "element": "物理",
       "recommended_sets": [
         "啄木鸟电音",
@@ -324,13 +324,13 @@
       "id": "piper",
       "name": "派派",
       "tier": "T3",
-      "role": "副C/异常",
+      "role": "异常",
       "element": "物理",
       "recommended_sets": [
         "自由蓝调",
-        "摇滚爵士"
+        "混沌重金属"
       ],
-      "set_notes": "自由蓝调4件套+摇滚爵士2件套；紊乱体系选摇滚爵士4件套，搭配物理主C强击流选自由蓝调4件套",
+      "set_notes": "自由蓝调4件套+混沌重金属2件套；紊乱体系选混沌重金属4件套，搭配物理主C强击流选自由蓝调4件套",
       "main_stats": {
         "4": [
           "异常精通",
@@ -357,7 +357,7 @@
       "id": "koleda",
       "name": "珂蕾妲",
       "tier": "T3",
-      "role": "辅助/击破",
+      "role": "击破",
       "element": "火",
       "recommended_sets": [
         "震星迪斯科",
@@ -390,7 +390,7 @@
       "id": "叶瞬光",
       "name": "叶瞬光",
       "tier": "TBD",
-      "role": "未知",
+      "role": "强攻",
       "element": "物理",
       "recommended_sets": [
         "沧浪行歌",
@@ -420,7 +420,7 @@
       "id": "维琳娜",
       "name": "维琳娜",
       "tier": "TBD",
-      "role": "未知",
+      "role": "异常",
       "element": "风",
       "recommended_sets": [
         "呼啸沙龙",
@@ -450,7 +450,7 @@
       "id": "凯撒",
       "name": "凯撒",
       "tier": "TBD",
-      "role": "未知",
+      "role": "防护",
       "element": "物理",
       "recommended_sets": [
         "原始朋克",
@@ -480,7 +480,7 @@
       "id": "雅",
       "name": "雅",
       "tier": "TBD",
-      "role": "未知",
+      "role": "异常",
       "element": "冰",
       "recommended_sets": [
         "折枝剑歌",
@@ -513,7 +513,7 @@
       "id": "莱特",
       "name": "莱特",
       "tier": "TBD",
-      "role": "未知",
+      "role": "击破",
       "element": "火",
       "recommended_sets": [
         "震星迪斯科",
@@ -545,7 +545,7 @@
       "id": "悠真",
       "name": "悠真",
       "tier": "TBD",
-      "role": "未知",
+      "role": "强攻",
       "element": "电",
       "recommended_sets": [
         "如影相随",
@@ -575,7 +575,7 @@
       "id": "柳",
       "name": "柳",
       "tier": "TBD",
-      "role": "未知",
+      "role": "异常",
       "element": "电",
       "recommended_sets": [
         "雷暴重金属",
@@ -607,7 +607,7 @@
       "id": "青衣",
       "name": "青衣",
       "tier": "TBD",
-      "role": "未知",
+      "role": "击破",
       "element": "电",
       "recommended_sets": [
         "震星迪斯科",
@@ -639,7 +639,7 @@
       "id": "简",
       "name": "简",
       "tier": "TBD",
-      "role": "未知",
+      "role": "异常",
       "element": "物理",
       "recommended_sets": [
         "獠牙重金属",
@@ -670,7 +670,7 @@
       "id": "雨果",
       "name": "雨果",
       "tier": "TBD",
-      "role": "未知",
+      "role": "强攻",
       "element": "冰",
       "recommended_sets": [
         "激素朋克",
@@ -702,8 +702,8 @@
       "id": "耀嘉音",
       "name": "耀嘉音",
       "tier": "TBD",
-      "role": "未知",
-      "element": "未知",
+      "role": "支援",
+      "element": "以太",
       "recommended_sets": [
         "静听嘉音",
         "摇摆爵士"
@@ -735,8 +735,8 @@
       "id": "照",
       "name": "照",
       "tier": "TBD",
-      "role": "未知",
-      "element": "未知",
+      "role": "支援",
+      "element": "冰",
       "recommended_sets": [
         "摇摆爵士",
         "云岿如我"
@@ -764,7 +764,7 @@
       "id": "「扳机」",
       "name": "「扳机」",
       "tier": "TBD",
-      "role": "未知",
+      "role": "击破",
       "element": "电",
       "recommended_sets": [
         "如影相随",
@@ -796,7 +796,7 @@
       "id": "仪玄",
       "name": "仪玄",
       "tier": "TBD",
-      "role": "未知",
+      "role": "击破",
       "element": "以太",
       "recommended_sets": [
         "云岿如我",
@@ -829,7 +829,7 @@
       "id": "零号·安比",
       "name": "零号·安比",
       "tier": "TBD",
-      "role": "未知",
+      "role": "强攻",
       "element": "电",
       "recommended_sets": [
         "如影相随",
@@ -862,8 +862,8 @@
       "id": "橘福福",
       "name": "橘福福",
       "tier": "TBD",
-      "role": "未知",
-      "element": "未知",
+      "role": "击破",
+      "element": "火",
       "recommended_sets": [
         "山大王",
         "激素朋克"
@@ -894,8 +894,8 @@
       "id": "卢西娅",
       "name": "卢西娅",
       "tier": "TBD",
-      "role": "未知",
-      "element": "未知",
+      "role": "支援",
+      "element": "以太",
       "recommended_sets": [
         "月光骑士颂",
         "云岿如我"
@@ -924,7 +924,7 @@
       "id": "「席德」",
       "name": "「席德」",
       "tier": "TBD",
-      "role": "未知",
+      "role": "强攻",
       "element": "电",
       "recommended_sets": [
         "拂晓生花",
@@ -955,8 +955,8 @@
       "id": "琉音",
       "name": "琉音",
       "tier": "TBD",
-      "role": "未知",
-      "element": "未知",
+      "role": "击破",
+      "element": "物理",
       "recommended_sets": [
         "山大王",
         "啄木鸟电音"
@@ -985,8 +985,8 @@
       "id": "千夏",
       "name": "千夏",
       "tier": "TBD",
-      "role": "未知",
-      "element": "未知",
+      "role": "支援",
+      "element": "物理",
       "recommended_sets": [
         "月光骑士颂",
         "摇摆爵士"
@@ -1014,7 +1014,7 @@
       "id": "爱芮",
       "name": "爱芮",
       "tier": "TBD",
-      "role": "未知",
+      "role": "异常",
       "element": "以太",
       "recommended_sets": [
         "流光咏叹",
@@ -1046,7 +1046,7 @@
       "id": "比利",
       "name": "比利",
       "tier": "TBD",
-      "role": "未知",
+      "role": "强攻",
       "element": "物理",
       "recommended_sets": [
         "啄木鸟电音",
@@ -1079,7 +1079,7 @@
       "id": "安东",
       "name": "安东",
       "tier": "TBD",
-      "role": "未知",
+      "role": "强攻",
       "element": "电",
       "recommended_sets": [
         "雷暴重金属",
@@ -1111,8 +1111,8 @@
       "id": "本",
       "name": "本",
       "tier": "TBD",
-      "role": "未知",
-      "element": "未知",
+      "role": "防护",
+      "element": "火",
       "recommended_sets": [
         "原始朋克",
         "震星迪斯科"
@@ -1142,8 +1142,8 @@
       "id": "露西",
       "name": "露西",
       "tier": "TBD",
-      "role": "未知",
-      "element": "未知",
+      "role": "支援",
+      "element": "火",
       "recommended_sets": [
         "摇摆爵士",
         "激素朋克"
@@ -1173,7 +1173,7 @@
       "id": "赛斯",
       "name": "赛斯",
       "tier": "TBD",
-      "role": "未知",
+      "role": "防护",
       "element": "电",
       "recommended_sets": [
         "摇摆爵士",
@@ -1205,8 +1205,8 @@
       "id": "潘引壶",
       "name": "潘引壶",
       "tier": "TBD",
-      "role": "未知",
-      "element": "未知",
+      "role": "防护",
+      "element": "物理",
       "recommended_sets": [
         "静听嘉音",
         "摇摆爵士"
@@ -1237,7 +1237,7 @@
       "id": "真斗",
       "name": "真斗",
       "tier": "TBD",
-      "role": "未知",
+      "role": "击破",
       "element": "火",
       "recommended_sets": [
         "云岿如我",
@@ -1269,7 +1269,7 @@
       "id": "可琳",
       "name": "可琳",
       "tier": "TBD",
-      "role": "未知",
+      "role": "强攻",
       "element": "物理",
       "recommended_sets": [
         "河豚电音",
@@ -1301,7 +1301,7 @@
       "id": "波可娜",
       "name": "波可娜",
       "tier": "TBD",
-      "role": "未知",
+      "role": "击破",
       "element": "物理",
       "recommended_sets": [
         "如影相随",
@@ -1335,7 +1335,7 @@
       "id": "伊德海莉",
       "name": "伊德海莉",
       "tier": "TBD",
-      "role": "未知",
+      "role": "击破",
       "element": "冰",
       "recommended_sets": [
         "云岿如我",
@@ -1367,7 +1367,7 @@
       "id": "柏妮思",
       "name": "柏妮思",
       "tier": "TBD",
-      "role": "未知",
+      "role": "异常",
       "element": "火",
       "recommended_sets": [
         "混沌爵士",
@@ -1401,7 +1401,7 @@
       "id": "奥菲丝&「鬼火」",
       "name": "奥菲丝&「鬼火」",
       "tier": "TBD",
-      "role": "未知",
+      "role": "强攻",
       "element": "火",
       "recommended_sets": [
         "如影相随",
@@ -1434,7 +1434,7 @@
       "id": "伊芙琳",
       "name": "伊芙琳",
       "tier": "TBD",
-      "role": "未知",
+      "role": "强攻",
       "element": "火",
       "recommended_sets": [
         "啄木鸟电音",
@@ -1467,7 +1467,7 @@
       "id": "薇薇安",
       "name": "薇薇安",
       "tier": "TBD",
-      "role": "未知",
+      "role": "异常",
       "element": "以太",
       "recommended_sets": [
         "法厄同之歌",
@@ -1498,7 +1498,7 @@
       "id": "爱丽丝",
       "name": "爱丽丝",
       "tier": "TBD",
-      "role": "未知",
+      "role": "异常",
       "element": "物理",
       "recommended_sets": [
         "獠牙重金属",
@@ -1529,8 +1529,8 @@
       "id": "柚叶",
       "name": "柚叶",
       "tier": "TBD",
-      "role": "未知",
-      "element": "未知",
+      "role": "支援",
+      "element": "物理",
       "recommended_sets": [
         "摇摆爵士",
         "法厄同之歌"
@@ -1559,7 +1559,7 @@
       "id": "般岳",
       "name": "般岳",
       "tier": "TBD",
-      "role": "未知",
+      "role": "击破",
       "element": "火",
       "recommended_sets": [
         "云岿如我",
@@ -1589,7 +1589,7 @@
       "id": "南宫羽",
       "name": "南宫羽",
       "tier": "TBD",
-      "role": "未知",
+      "role": "击破",
       "element": "以太",
       "recommended_sets": [
         "法厄同之歌",
@@ -1619,8 +1619,8 @@
       "id": "希希芙",
       "name": "希希芙",
       "tier": "TBD",
-      "role": "未知",
-      "element": "未知",
+      "role": "强攻",
+      "element": "电",
       "recommended_sets": [
         "拂晓生花",
         "摇摆爵士"
@@ -1649,7 +1649,7 @@
       "id": "星徽·比利",
       "name": "星徽·比利",
       "tier": "TBD",
-      "role": "未知",
+      "role": "击破",
       "element": "物理",
       "recommended_sets": [
         "云岿如我",
@@ -1682,7 +1682,7 @@
       "id": "普罗米娅",
       "name": "普罗米娅",
       "tier": "TBD",
-      "role": "未知",
+      "role": "异常",
       "element": "冰",
       "recommended_sets": [
         "囚徒手记",
@@ -1712,8 +1712,8 @@
       "id": "佩洛伊斯",
       "name": "佩洛伊斯",
       "tier": "TBD",
-      "role": "未知",
-      "element": "未知",
+      "role": "强攻",
+      "element": "以太",
       "recommended_sets": [
         "拂晓行纪",
         "啄木鸟电音"
@@ -1751,7 +1751,7 @@
     "拂晓生花",
     "拂晓行纪",
     "摇摆爵士",
-    "摇滚爵士",
+    "混沌重金属",
     "月光骑士颂",
     "极地重金属",
     "沧浪行歌",
@@ -1766,7 +1766,8 @@
     "自由蓝调",
     "雷暴重金属",
     "震星迪斯科",
-    "静听嘉音"
+    "静听嘉音",
+    "雪兔梦游仙境"
   ],
   "substats": [
     "暴击率%",
