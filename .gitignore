@@ -5,3 +5,5 @@ wiki_data/
 write_html.py
 .env
 *.log
+scripts/scraped_chars.json
+url-to-markdown/

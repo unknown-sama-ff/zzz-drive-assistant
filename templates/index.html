@@ -9,61 +9,141 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0F0F23;
-    --card: #1A1A35;
-    --card2: #27273B;
-    --border: #4C1D95;
-    --accent: #7C3AED;
-    --accent2: #A78BFA;
-    --cta: #F43F5E;
-    --text: #E2E8F0;
-    --text2: #94A3B8;
-    --green: #10B981;
-    --red: #EF4444;
-    --yellow: #F59E0B;
-    --radius: 8px;
-    --glow: 0 0 12px rgba(124,58,237,0.5);
-    --glow-cta: 0 0 16px rgba(244,63,94,0.5);
+    --bg: #0c0e14;
+    --accent: #5b7fa6;
+    --accent2: #8bafc9;
+    --accent-glow: rgba(91,127,166,0.25);
+    --cta: #9e5f70;
+    --cta2: #c47d91;
+    --cta-glow: rgba(158,95,112,0.25);
+    --text: #cdd6e0;
+    --text2: #6a7f90;
+    --green: #4a9e7a;
+    --red: #9e5050;
+    --yellow: #9e8040;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --glass-bg: rgba(255,255,255,0.045);
+    --glass-bg2: rgba(255,255,255,0.028);
+    --glass-border: rgba(255,255,255,0.09);
+    --glass-border-active: rgba(180,210,240,0.22);
+    --glow: 0 0 16px rgba(91,127,166,0.22);
+    --glow-cta: 0 0 16px rgba(158,95,112,0.28);
+    /* legacy aliases */
+    --card: rgba(255,255,255,0.045);
+    --card2: rgba(255,255,255,0.028);
+    --border: rgba(255,255,255,0.09);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; min-height: 100vh; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    min-height: 100vh;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(ellipse 60% 50% at 10% 20%, rgba(60,100,180,0.45) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 55% at 90% 80%, rgba(140,60,100,0.35) 0%, transparent 60%),
+      radial-gradient(ellipse 35% 45% at 60% 45%, rgba(40,80,140,0.25) 0%, transparent 55%),
+      #0c0e14;
+  }
 
   header {
     position: relative; overflow: hidden;
-    background: linear-gradient(135deg, #1a0a2e 0%, #0F0F23 100%);
-    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.035);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border-bottom: 1px solid var(--glass-border);
     padding: 16px 20px;
     display: flex; align-items: center; gap: 12px;
-    box-shadow: 0 2px 20px rgba(124,58,237,0.3);
-  }
-  header::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
+    box-shadow: 0 2px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.07);
   }
   header .logo {
     font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 900;
     color: var(--accent2); letter-spacing: 2px;
-    text-shadow: 0 0 10px rgba(124,58,237,0.8), 0 0 20px rgba(124,58,237,0.4);
+    text-shadow: 0 0 12px rgba(91,127,166,0.6);
   }
   header .sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text2); letter-spacing: 1px; }
 
   .container { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
 
+  /* ── Liquid Glass base ────────────────────────────── */
+  .glass-card {
+    position: relative;
+    border-radius: var(--radius);
+  }
+  /* 层1：毛玻璃基础 */
+  .glass-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    backdrop-filter: blur(24px) saturate(1.8) brightness(1.1);
+    -webkit-backdrop-filter: blur(24px) saturate(1.8) brightness(1.1);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    box-shadow:
+      0 8px 32px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      inset 0 -1px 0 rgba(0,0,0,0.3);
+    pointer-events: none;
+    z-index: 0;
+    transition: background .2s, border-color .2s, box-shadow .2s;
+  }
+  /* 层2：斜向光泽反光 */
+  .glass-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      rgba(255,255,255,0.10) 0%,
+      rgba(255,255,255,0.03) 40%,
+      transparent 60%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+  /* 层3：内容 */
+  .glass-card > * {
+    position: relative;
+    z-index: 2;
+  }
+  /* hover 状态 */
+  .glass-card:hover::before {
+    background: rgba(255,255,255,0.11);
+    border-color: rgba(180,210,240,0.25);
+    box-shadow:
+      0 12px 40px rgba(0,0,0,0.55),
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      inset 0 -1px 0 rgba(0,0,0,0.3);
+  }
+
   /* Character selector */
   .char-section {
-    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    border-radius: var(--radius);
     padding: 20px; margin-bottom: 24px;
-    box-shadow: var(--glow);
   }
   .char-section label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent2); display: block; margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase; }
   .char-section select {
-    width: 100%; max-width: 320px; background: var(--card2); border: 1px solid var(--border);
-    color: var(--text); padding: 10px 14px; border-radius: var(--radius); font-size: 15px; cursor: pointer;
+    width: 100%; max-width: 320px;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
+    color: var(--text); padding: 10px 14px; border-radius: var(--radius-sm); font-size: 15px; cursor: pointer;
     outline: none; transition: border-color .2s, box-shadow .2s;
   }
-  .char-section select:focus { border-color: var(--accent); box-shadow: var(--glow); }
+  .char-section select option {
+    background: #ffffff;
+    color: #1a2030;
+  }
+  select option, select.field-select option {
+    background: #ffffff;
+    color: #1a2030;
+  }
+  .char-section select:focus { border-color: var(--glass-border-active); box-shadow: var(--glow); }
   .char-info {
-    margin-top: 14px; padding: 12px 16px; background: var(--card2); border-radius: var(--radius);
+    margin-top: 14px; padding: 12px 16px;
+    background: rgba(255,255,255,0.03); border-radius: var(--radius-sm);
     border-left: 3px solid var(--accent); display: none;
   }
   .char-info.visible { display: block; }
@@ -79,46 +159,47 @@
   @media (max-width: 480px) { .discs-grid { grid-template-columns: 1fr; } }
 
   .disc-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px;
-    transition: border-color .2s, box-shadow .2s;
+    border-radius: var(--radius); padding: 16px;
+    transition: border-color .2s;
     clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
   }
-  .disc-card:hover { border-color: var(--accent); box-shadow: var(--glow); }
-  .disc-card.graded { border-color: var(--cta); box-shadow: var(--glow-cta); }
+  .disc-card:hover::before { border-color: var(--glass-border-active); box-shadow: var(--glow), 0 8px 32px rgba(0,0,0,0.5); }
+  .disc-card.graded::before { border-color: rgba(158,95,112,0.4); box-shadow: var(--glow-cta), 0 8px 32px rgba(0,0,0,0.5); }
 
   .disc-header {
     display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
   }
   .disc-num {
-    width: 28px; height: 28px; background: linear-gradient(135deg, var(--accent), var(--cta));
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--accent), var(--cta));
     color: #fff; border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
     font-family: 'Orbitron', monospace; font-weight: 700; font-size: 13px; flex-shrink: 0;
-    box-shadow: 0 0 8px rgba(124,58,237,0.6);
+    box-shadow: 0 0 8px rgba(91,127,166,0.5);
   }
   .disc-title { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500; color: var(--accent2); letter-spacing: 1px; }
   .disc-pos-hint { font-size: 11px; color: var(--text2); margin-left: auto; }
 
-  /* OCR button and panel */
+  /* OCR */
   .ocr-btn {
-    margin-left: auto; background: transparent; border: 1px solid var(--border);
+    margin-left: auto; background: transparent; border: 1px solid var(--glass-border);
     color: var(--text2); width: 26px; height: 26px; border-radius: 4px; cursor: pointer;
     font-size: 13px; display: flex; align-items: center; justify-content: center;
-    transition: border-color .2s, color .2s, box-shadow .2s; flex-shrink: 0;
+    transition: border-color .2s, color .2s; flex-shrink: 0;
   }
-  .ocr-btn:hover { border-color: var(--accent2); color: var(--accent2); box-shadow: 0 0 8px rgba(167,139,250,0.4); }
+  .ocr-btn:hover { border-color: var(--accent2); color: var(--accent2); }
   .ocr-panel {
     display: none; margin-bottom: 12px; padding: 10px 12px;
-    background: var(--card2); border-radius: var(--radius); border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); border: 1px solid var(--glass-border);
   }
   .ocr-panel.open { display: block; }
   .ocr-panel-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .ocr-file-input {
-    flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--border);
+    flex: 1; min-width: 0; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
     color: var(--text2); padding: 5px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;
   }
   .ocr-file-input::file-selector-button {
-    background: var(--card); border: 1px solid var(--border); color: var(--accent2);
+    background: rgba(255,255,255,0.07); border: 1px solid var(--glass-border); color: var(--accent2);
     padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; margin-right: 6px;
   }
   .ocr-go-btn {
@@ -135,43 +216,38 @@
   .field-group label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text2); display: block; margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
 
   input[type="text"], select.field-select {
-    width: 100%; background: var(--card2); border: 1px solid var(--border);
-    color: var(--text); padding: 7px 10px; border-radius: var(--radius); font-size: 13px; outline: none;
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    color: var(--text); padding: 7px 10px; border-radius: var(--radius-sm); font-size: 13px; outline: none;
     transition: border-color .2s, box-shadow .2s;
   }
-  input[type="text"]:focus, select.field-select:focus { border-color: var(--accent); box-shadow: var(--glow); }
-  input[type="text"]::placeholder { color: #555575; }
+  input[type="text"]:focus, select.field-select:focus { border-color: var(--glass-border-active); box-shadow: var(--glow); }
+  input[type="text"]::placeholder { color: #3a4a5a; }
 
   .substat-row { display: flex; gap: 6px; margin-bottom: 6px; }
   .substat-row select { flex: 2; }
   .substat-row input { flex: 1; min-width: 0; font-family: 'JetBrains Mono', monospace; }
-
-  /* Datalist hint */
   .set-input-wrap { position: relative; }
 
   /* Score button */
   .score-btn {
     display: block; width: 100%; max-width: 400px; margin: 0 auto 32px;
-    background: linear-gradient(135deg, var(--cta) 0%, #BE185D 100%);
+    background: linear-gradient(135deg, var(--cta) 0%, #7a3a4e 100%);
     color: #fff; font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 700; padding: 14px;
     border: none; border-radius: var(--radius); cursor: pointer; letter-spacing: 2px;
     transition: opacity .2s, transform .1s, box-shadow .2s;
-    box-shadow: var(--glow-cta);
+    box-shadow: var(--glow-cta), 0 4px 20px rgba(0,0,0,0.4);
   }
-  .score-btn:hover { opacity: .9; box-shadow: 0 0 24px rgba(244,63,94,0.7); }
+  .score-btn:hover { opacity: .9; box-shadow: 0 0 28px rgba(158,95,112,0.5), 0 4px 20px rgba(0,0,0,0.4); }
   .score-btn:active { transform: scale(.98); }
   .score-btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
 
   /* Loading */
-  .loading {
-    text-align: center; padding: 40px; display: none;
-  }
+  .loading { text-align: center; padding: 40px; display: none; }
   .loading.visible { display: block; }
   .spinner {
-    width: 40px; height: 40px; border: 3px solid var(--border);
+    width: 40px; height: 40px; border: 3px solid rgba(91,127,166,0.2);
     border-top-color: var(--accent); border-radius: 50%;
     animation: spin .8s linear infinite; margin: 0 auto 12px;
-    box-shadow: 0 0 12px rgba(124,58,237,0.5);
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -180,9 +256,7 @@
   .results.visible { display: block; }
 
   .overall-card {
-    background: linear-gradient(135deg, #1a0a2e 0%, #1A1A35 100%);
-    border: 1px solid var(--accent); border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
-    box-shadow: var(--glow);
+    border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
   }
   .overall-top { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
   .grade-badge {
@@ -191,13 +265,13 @@
     font-family: 'Orbitron', monospace; font-size: 30px; font-weight: 900; flex-shrink: 0;
     clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   }
-  .grade-S { background: linear-gradient(135deg,var(--cta),#BE185D); color: #fff; box-shadow: var(--glow-cta); }
-  .grade-A { background: linear-gradient(135deg,var(--accent),var(--accent2)); color: #fff; box-shadow: var(--glow); }
-  .grade-B { background: linear-gradient(135deg,#10B981,#059669); color: #fff; }
-  .grade-C { background: linear-gradient(135deg,#475569,#334155); color: #fff; }
-  .grade-D { background: linear-gradient(135deg,var(--red),#991B1B); color: #fff; }
+  .grade-S { background: linear-gradient(135deg, var(--cta), #7a3a4e); color: #fff; box-shadow: var(--glow-cta); }
+  .grade-A { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; box-shadow: var(--glow); }
+  .grade-B { background: linear-gradient(135deg, #3a8060, #2a6040); color: #fff; }
+  .grade-C { background: linear-gradient(135deg, #3a4555, #2a3545); color: #fff; }
+  .grade-D { background: linear-gradient(135deg, var(--red), #6a2020); color: #fff; }
 
-  .overall-info .score-num { font-family: 'Orbitron', monospace; font-size: 42px; font-weight: 900; color: var(--accent2); line-height: 1; text-shadow: 0 0 10px rgba(167,139,250,0.6); }
+  .overall-info .score-num { font-family: 'Orbitron', monospace; font-size: 42px; font-weight: 900; color: var(--accent2); line-height: 1; text-shadow: 0 0 12px rgba(139,175,201,0.5); }
   .overall-info .score-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text2); margin-top: 2px; letter-spacing: 1px; }
   .overall-comment { margin-top: 14px; font-size: 14px; color: var(--text2); line-height: 1.7; }
 
@@ -208,7 +282,7 @@
   @media (max-width: 480px) { .discs-result-grid { grid-template-columns: 1fr; } }
 
   .disc-result-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px;
+    border-radius: var(--radius); padding: 14px;
     clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   }
   .disc-result-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
@@ -223,47 +297,47 @@
   .disc-result-line { font-size: 12px; color: var(--text2); margin-bottom: 4px; line-height: 1.5; }
   .disc-result-line span { color: var(--text); }
   .effective-bar { display: flex; gap: 3px; margin-top: 8px; }
-  .eff-dot { width: 18px; height: 5px; border-radius: 2px; background: var(--card2); border: 1px solid var(--border); }
-  .eff-dot.active { background: var(--green); border-color: var(--green); box-shadow: 0 0 6px rgba(16,185,129,0.6); }
+  .eff-dot { width: 18px; height: 5px; border-radius: 2px; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); }
+  .eff-dot.active { background: var(--green); border-color: var(--green); box-shadow: 0 0 6px rgba(74,158,122,0.5); }
 
   .suggestions-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px;
-    box-shadow: var(--glow);
+    border-radius: var(--radius); padding: 20px;
   }
   .suggestions-card h3 { font-family: 'Orbitron', monospace; font-size: 13px; color: var(--accent2); margin-bottom: 14px; letter-spacing: 2px; }
   .suggestion-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; font-size: 13px; }
   .suggestion-icon { color: var(--cta); flex-shrink: 0; font-size: 15px; }
   .priority-box {
-    margin-top: 14px; padding: 10px 14px; background: var(--card2); border-radius: var(--radius);
+    margin-top: 14px; padding: 10px 14px;
+    background: rgba(255,255,255,0.03); border-radius: var(--radius-sm);
     border-left: 3px solid var(--cta); font-size: 13px;
   }
   .priority-box .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text2); margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
 
   .error-box {
-    background: rgba(239,68,68,0.1); border: 1px solid var(--red); border-radius: var(--radius);
+    background: rgba(158,80,80,0.1); border: 1px solid var(--red); border-radius: var(--radius);
     padding: 16px 20px; color: var(--red); font-size: 14px; display: none;
   }
   .error-box.visible { display: block; }
 
   /* Settings button */
   .settings-btn {
-    margin-left: auto; background: transparent; border: 1px solid var(--border);
-    color: var(--text2); padding: 7px 12px; border-radius: var(--radius); cursor: pointer;
+    margin-left: auto; background: transparent; border: 1px solid var(--glass-border);
+    color: var(--text2); padding: 7px 12px; border-radius: var(--radius-sm); cursor: pointer;
     font-family: 'JetBrains Mono', monospace; font-size: 13px;
-    transition: border-color .2s, color .2s, box-shadow .2s;
+    transition: border-color .2s, color .2s;
   }
-  .settings-btn:hover { border-color: var(--accent); color: var(--accent2); box-shadow: var(--glow); }
+  .settings-btn:hover { border-color: var(--glass-border-active); color: var(--accent2); }
 
   /* Settings modal */
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100;
+    position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 100;
     display: none; align-items: center; justify-content: center; padding: 16px;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
   }
   .modal-overlay.visible { display: flex; }
   .modal {
-    background: var(--card); border: 1px solid var(--accent); border-radius: var(--radius);
-    padding: 24px; width: 100%; max-width: 480px; box-shadow: var(--glow);
+    border-radius: var(--radius); padding: 24px;
+    width: 100%; max-width: 480px;
   }
   .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
   .modal-title { font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 700; color: var(--accent2); letter-spacing: 2px; }
@@ -273,43 +347,104 @@
   .setting-field { margin-bottom: 16px; }
   .setting-field label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text2); display: block; margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
   .setting-field input, .setting-field select {
-    width: 100%; background: var(--card2); border: 1px solid var(--border);
-    color: var(--text); padding: 9px 12px; border-radius: var(--radius); font-size: 13px; outline: none;
-    transition: border-color .2s, box-shadow .2s;
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    color: var(--text); padding: 9px 12px; border-radius: var(--radius-sm); font-size: 13px; outline: none;
+    transition: border-color .2s;
   }
-  .setting-field input:focus, .setting-field select:focus { border-color: var(--accent); box-shadow: var(--glow); }
-  .setting-field input::placeholder { color: #55556a; }
+  .setting-field input:focus, .setting-field select:focus { border-color: var(--glass-border-active); }
+  .setting-field input::placeholder { color: #3a4a5a; }
 
   .setting-hint { font-size: 11px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
   .setting-hint a { color: var(--accent2); text-decoration: none; }
 
   .provider-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
   .ptab {
-    flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius);
-    background: var(--card2); color: var(--text2); cursor: pointer;
+    flex: 1; padding: 8px; border: 1px solid var(--glass-border); border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.03); color: var(--text2); cursor: pointer;
     font-family: 'JetBrains Mono', monospace; font-size: 12px;
     text-align: center; transition: all .15s;
   }
-  .ptab.active { border-color: var(--accent); color: var(--accent2); background: rgba(124,58,237,0.15); box-shadow: var(--glow); }
+  .ptab.active { border-color: var(--glass-border-active); color: var(--accent2); background: rgba(91,127,166,0.12); }
 
   .modal-save-btn {
     width: 100%; padding: 11px;
-    background: linear-gradient(135deg, var(--cta), #BE185D);
+    background: linear-gradient(135deg, var(--cta), #7a3a4e);
     color: #fff; font-family: 'Orbitron', monospace; font-weight: 700; border: none;
-    border-radius: var(--radius); cursor: pointer; font-size: 13px; margin-top: 4px;
-    letter-spacing: 1px; transition: opacity .2s, box-shadow .2s;
+    border-radius: var(--radius-sm); cursor: pointer; font-size: 13px; margin-top: 4px;
+    letter-spacing: 1px; transition: opacity .2s;
     box-shadow: var(--glow-cta);
   }
   .modal-save-btn:hover { opacity: .9; }
 
   .api-status {
     font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-top: 6px;
-    padding: 6px 10px; border-radius: var(--radius); background: var(--card2); color: var(--text2);
+    padding: 6px 10px; border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.03); color: var(--text2);
   }
   .api-status.set { color: var(--green); }
+
+  /* Auto-fill scan bar */
+  .scan-bar {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 14px 18px; margin-bottom: 16px; border-radius: var(--radius);
+  }
+  .scan-bar-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--accent2); letter-spacing: 1px; text-transform: uppercase; white-space: nowrap;
+  }
+  .scan-file-input {
+    flex: 1; min-width: 160px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
+    color: var(--text2); padding: 6px 10px; border-radius: var(--radius-sm);
+    font-size: 12px; cursor: pointer;
+  }
+  .scan-file-input::file-selector-button {
+    background: rgba(255,255,255,0.07); border: 1px solid var(--glass-border);
+    color: var(--accent2); padding: 4px 10px; border-radius: 4px;
+    cursor: pointer; font-size: 11px; margin-right: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .scan-go-btn {
+    background: linear-gradient(135deg, var(--accent), var(--cta));
+    color: #fff; border: none; border-radius: var(--radius-sm);
+    padding: 7px 18px; font-size: 12px; font-family: 'Orbitron', monospace;
+    font-weight: 700; cursor: pointer; letter-spacing: 1px; white-space: nowrap;
+    transition: opacity .2s; flex-shrink: 0;
+    box-shadow: 0 0 12px rgba(91,127,166,0.3);
+  }
+  .scan-go-btn:hover { opacity: .85; }
+  .scan-go-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .scan-status {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--text2); white-space: nowrap;
+  }
+  .scan-slot-hint {
+    font-size: 11px; color: var(--text2); display: flex; align-items: center; gap: 6px;
+  }
+  .scan-slot-hint select {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    color: var(--text); padding: 4px 8px; border-radius: 4px; font-size: 11px; outline: none;
+  }
+  .scan-slot-hint select option { background: #fff; color: #1a2030; }
 </style>
 </head>
 <body>
+
+<!-- Liquid Glass SVG filter -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <filter id="lg-filter" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.012" numOctaves="2" seed="5" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
+      <feGaussianBlur in="displaced" stdDeviation="1" result="blurred"/>
+      <feColorMatrix in="blurred" type="matrix"
+        values="1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 22 -9" result="shaped"/>
+      <feComposite in="SourceGraphic" in2="shaped" operator="in"/>
+    </filter>
+  </defs>
+</svg>
 
 <header>
   <div>
@@ -321,7 +456,7 @@
 
 <!-- Settings Modal -->
 <div class="modal-overlay" id="settingsModal">
-  <div class="modal">
+  <div class="glass-card modal">
     <div class="modal-header">
       <div class="modal-title">⚙ API CONFIG</div>
       <button class="modal-close" onclick="closeSettings()">×</button>
@@ -361,7 +496,7 @@
 <div class="container">
 
   <!-- Character Select -->
-  <div class="char-section">
+  <div class="glass-card char-section">
     <label>选择角色</label>
     <select id="charSelect">
       <option value="">-- 请选择角色 --</option>
@@ -369,6 +504,26 @@
     <div class="char-info" id="charInfo">
       <div class="char-info-grid" id="charInfoGrid"></div>
     </div>
+  </div>
+
+  <!-- One-click scan bar -->
+  <div class="glass-card scan-bar" id="scanBar">
+    <span class="scan-bar-label">📷 一键识图</span>
+    <input type="file" class="scan-file-input" id="scanFile" accept="image/*">
+    <div class="scan-slot-hint">
+      <span>填入槽位：</span>
+      <select id="scanSlotOverride">
+        <option value="0">自动识别</option>
+        <option value="1">1号位</option>
+        <option value="2">2号位</option>
+        <option value="3">3号位</option>
+        <option value="4">4号位</option>
+        <option value="5">5号位</option>
+        <option value="6">6号位</option>
+      </select>
+    </div>
+    <button class="scan-go-btn" id="scanGoBtn" onclick="runAutoScan()">识别填入</button>
+    <span class="scan-status" id="scanStatus"></span>
   </div>
 
   <!-- 6 Disc Cards -->
@@ -605,7 +760,7 @@ function buildDiscCards() {
 
 function buildDiscCard(slot) {
   const card = document.createElement("div");
-  card.className = "disc-card";
+  card.className = "glass-card disc-card";
   card.id = `disc-${slot}`;
 
   const mainOptions = (charData.main_stats_by_slot[String(slot)] || [])
@@ -777,7 +932,7 @@ function renderResults(data) {
     for (let i = 0; i < 4; i++) dots += `<div class="eff-dot${i < eff ? " active" : ""}"></div>`;
 
     discCards += `
-    <div class="disc-result-card">
+    <div class="glass-card disc-result-card">
       <div class="disc-result-header">
         <div class="disc-result-grade ${gradeColor(dg)}">${dg}</div>
         <div>
@@ -798,7 +953,7 @@ function renderResults(data) {
   ).join("");
 
   el.innerHTML = `
-    <div class="overall-card">
+    <div class="glass-card overall-card">
       <div class="overall-top">
         <div class="grade-badge ${gradeColor(grade)}">${grade}</div>
         <div class="overall-info">
@@ -813,7 +968,7 @@ function renderResults(data) {
 
     <div class="discs-result-grid">${discCards}</div>
 
-    <div class="suggestions-card">
+    <div class="glass-card suggestions-card">
       <h3>◈ 优化建议</h3>
       ${suggestions}
       ${data.priority_upgrades ? `
@@ -826,6 +981,76 @@ function renderResults(data) {
 
   el.classList.add("visible");
   el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+async function runAutoScan() {
+  const fileInput = document.getElementById('scanFile');
+  const statusEl = document.getElementById('scanStatus');
+  const btn = document.getElementById('scanGoBtn');
+  const slotOverride = parseInt(document.getElementById('scanSlotOverride').value);
+  const file = fileInput.files[0];
+  if (!file) { statusEl.style.color = 'var(--red)'; statusEl.textContent = '请先选择图片'; return; }
+
+  statusEl.style.color = 'var(--text2)';
+  statusEl.textContent = '识别中…';
+  btn.disabled = true;
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const dataUrl = e.target.result;
+    const b64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
+    const mime = file.type || 'image/png';
+    const cfg = loadSettings();
+    try {
+      const res = await fetch('/api/ocr_auto', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image: b64, mime_type: mime,
+          provider: cfg.provider || '',
+          api_key: cfg.api_key || '',
+          api_base: cfg.api_base || '',
+          model: cfg.model || ''
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      const slot = slotOverride || data.slot || 0;
+      if (!slot || slot < 1 || slot > 6) {
+        statusEl.style.color = 'var(--red)';
+        statusEl.textContent = '✗ 无法识别槽位，请手动选择';
+        return;
+      }
+
+      if (data.set_name) document.getElementById(`disc${slot}_set`).value = data.set_name;
+      if (data.main_stat) {
+        const mainEl = document.getElementById(`disc${slot}_main`);
+        if (mainEl) { mainEl.value = data.main_stat; mainEl.dispatchEvent(new Event('change')); }
+      }
+      (data.substats || []).forEach((sub, i) => {
+        const n = i + 1; if (n > 4) return;
+        const nameEl = document.getElementById(`disc${slot}_sub${n}_name`);
+        const valEl  = document.getElementById(`disc${slot}_sub${n}_val`);
+        if (nameEl && sub.name)  nameEl.value = sub.name;
+        if (valEl  && sub.value) valEl.value  = sub.value;
+      });
+
+      // Scroll the filled card into view
+      const card = document.getElementById(`disc-${slot}`);
+      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      statusEl.style.color = 'var(--green)';
+      statusEl.textContent = `✓ 已填入 ${slot} 号位`;
+      fileInput.value = '';
+    } catch(err) {
+      statusEl.style.color = 'var(--red)';
+      statusEl.textContent = '✗ ' + err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  };
+  reader.readAsDataURL(file);
 }
 
 init();
